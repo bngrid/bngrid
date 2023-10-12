@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .mimic-comp {
+    position: absolute;
+    box-shadow: 4px 4px 4px #d1d5db, -4px -4px 4px #ffffff;
+    border-radius: 20px;
+  }
+}
