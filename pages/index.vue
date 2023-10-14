@@ -16,7 +16,7 @@
     })
   })
   const pageStyle = computed(() => ({
-    translate: `${pageLeft.value}px`
+    left: `${pageLeft.value}px`
   }))
   const siteStyle = computed(() => ({
     gridTemplateColumns: `repeat(${store.site[0]}, ${store.site[2]}px)`,
@@ -50,7 +50,7 @@
         -screenWidth * pageNumber +
         (event.clientX - initialLeft) /
           (pageLeft.value > 0 || pageLeft.value < -screenWidth * (store.list.length - 1)
-            ? 2
+            ? 3
             : 1)
     }
   }
@@ -107,7 +107,10 @@
           class="relative grid"
           :style="siteStyle"
         >
-          {{ pageIndex }}
+        <div
+            v-for="_ in store.site[0] * store.site[1]"
+            class="rounded-[25%] border-2 border-white border-solid duration-300 opacity-60 mix-blend-difference"
+          ></div>
         </div>
       </div>
     </div>
