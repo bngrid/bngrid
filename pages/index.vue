@@ -29,19 +29,23 @@
   const pageLeft = ref(0)
   let isPageDown = false
   let isPageDelay = false
+  let pointerNum = 0
   let screenWidth = 0
   let pageNumber = 0
   let initialLeft = 0
   let pageTimer = 0
   const pageDown = (event: PointerEvent) => {
+    pointerNum++
     isPageDown = true
-    initialLeft = event.clientX
-    pageTimer = +setTimeout(() => {
-      isPageDelay = true
-    }, 800)
+    if (pointerNum === 1) {
+      initialLeft = event.clientX
+      pageTimer = +setTimeout(() => {
+        isPageDelay = true
+      }, 600)
+    }
   }
   const pageMove = (event: PointerEvent) => {
-    if (isPageDown) {
+    if (pointerNum === 1) {
       pageLeft.value =
         -screenWidth * pageNumber +
         (event.clientX - initialLeft) /
@@ -52,22 +56,32 @@
   }
   const pageUp = (event: PointerEvent) => {
     const distance = event.clientX - initialLeft
-    if (distance) {
-      pageNumber = Math.max(
-        Math.min(
-          isPageDelay
-            ? Math.floor(-pageLeft.value / screenWidth + 0.5)
-            : distance > 0
-            ? pageNumber - Math.ceil(distance / screenWidth)
-            : pageNumber - Math.floor(distance / screenWidth),
-          store.list.length - 1
-        ),
-        0
-      )
-      pageLeft.value = -screenWidth * pageNumber
+    if (pointerNum === 1) {
+      if (distance) {
+        pageNumber = Math.max(
+          Math.min(
+            isPageDelay
+              ? Math.floor(-pageLeft.value / screenWidth + 0.5)
+              : distance > 0
+              ? pageNumber - Math.ceil(distance / screenWidth)
+              : pageNumber - Math.floor(distance / screenWidth),
+            store.list.length - 1
+          ),
+          0
+        )
+        pageLeft.value = -screenWidth * pageNumber
+      }
+      isPageDown = false
     }
+    pointerNum--
     clearTimeout(pageTimer)
+    isPageDelay = false
+  }
+  const pageCancel = () => {
+    pointerNum = 0
+    pageLeft.value = -screenWidth * pageNumber
     isPageDown = false
+    clearTimeout(pageTimer)
     isPageDelay = false
   }
 </script>
@@ -78,7 +92,7 @@
     @pointerdown.left="pageDown"
     @pointermove="pageMove"
     @pointerup="pageUp"
-    @pointercancel="pageUp"
+    @pointercancel="pageCancel"
   >
     <div
       class="absolute flex h-full"
@@ -93,7 +107,7 @@
           class="relative grid"
           :style="siteStyle"
         >
-        {{ pageIndex }}
+          {{ pageIndex }}
         </div>
       </div>
     </div>
