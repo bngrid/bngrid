@@ -122,7 +122,7 @@
 
 <template>
   <div
-    class="relative h-[100dvh] bg-zinc-100 dark:bg-zinc-800 overflow-hidden touch-none select-none"
+    class="relative h-[100dvh] bg-zinc-100 dark:bg-zinc-800 overflow-hidden touch-none select-none duration-300"
     @pointerdown.left="pageDown"
     @pointermove="pageMove"
     @pointerup="pageUp"
