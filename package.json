@@ -11,12 +11,15 @@
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
+    "@nuxtjs/color-mode": "latest",
+    "@nuxtjs/tailwindcss": "latest",
     "nuxt": "latest",
     "vue": "latest",
-    "vue-router": "latest",
-    "@nuxtjs/tailwindcss": "latest"
+    "vue-router": "latest"
   },
   "dependencies": {
+    "@egoist/tailwindcss-icons": "latest",
+    "@iconify-json/grommet-icons": "latest",
     "@pinia/nuxt": "latest",
     "nanoid": "latest",
     "pinia": "latest"

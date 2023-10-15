@@ -1,6 +1,8 @@
 import type { Config } from 'tailwindcss'
+import { iconsPlugin, getIconCollections } from '@egoist/tailwindcss-icons'
 
 export default <Partial<Config>>{
+  darkMode: 'class',
   theme: {
     extend: {
       keyframes: {
@@ -20,5 +22,10 @@ export default <Partial<Config>>{
         lift: 'lift 300ms ease-in-out 1'
       }
     }
-  }
+  },
+  plugins: [
+    iconsPlugin({
+      collections: getIconCollections(['grommet-icons'])
+    })
+  ]
 }

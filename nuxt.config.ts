@@ -7,8 +7,12 @@ export default defineNuxtConfig({
         autoImports: ['defineStore']
       }
     ],
-    '@nuxtjs/tailwindcss'
+    '@nuxtjs/tailwindcss',
+    '@nuxtjs/color-mode'
   ],
+  colorMode: {
+    classSuffix: ''
+  },
   app: {
     head: {
       htmlAttrs: {

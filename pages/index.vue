@@ -8,12 +8,14 @@
       screenWidth = innerWidth
       pageLeft.value = -screenWidth * pageNumber
     })
+    addEventListener('keyup', keyup)
   })
   onUnmounted(() => {
     removeEventListener('resize', () => {
       screenWidth = innerWidth
       pageLeft.value = -screenWidth * pageNumber
     })
+    removeEventListener('keyup', keyup)
   })
   const pageStyle = computed(() => ({
     left: `${pageLeft.value}px`
@@ -25,19 +27,30 @@
     width: `${store.site[0] * store.site[2] + (store.site[0] - 1) * store.site[3]}px`,
     height: `${store.site[1] * store.site[2] + (store.site[1] - 1) * store.site[3]}px`
   }))
+  const paginationStyle = computed(() => ({
+    width: `${(2 * store.list.length + 1) * 6}px`
+  }))
+  const pointerStyle = computed(() => ({
+    left: `${pointerLeft.value}px`
+  }))
   const store = useStore()
+  const colorMode = useColorMode()
   const pageLeft = ref(0)
+  const pointerLeft = computed(() => (-pageLeft.value * 12) / screenWidth)
   let isPageDown = false
   let isPageDelay = false
-  let pointerNum = 0
+  let pointerNumber = 0
   let screenWidth = 0
   let pageNumber = 0
   let initialLeft = 0
   let pageTimer = 0
+  const toggleMode = () => {
+    colorMode.preference = colorMode.preference === 'dark' ? 'light' : 'dark'
+  }
   const pageDown = (event: PointerEvent) => {
-    pointerNum++
+    pointerNumber++
     isPageDown = true
-    if (pointerNum === 1) {
+    if (pointerNumber === 1) {
       initialLeft = event.clientX
       pageTimer = +setTimeout(() => {
         isPageDelay = true
@@ -45,7 +58,7 @@
     }
   }
   const pageMove = (event: PointerEvent) => {
-    if (pointerNum === 1) {
+    if (pointerNumber === 1) {
       pageLeft.value =
         -screenWidth * pageNumber +
         (event.clientX - initialLeft) /
@@ -56,7 +69,7 @@
   }
   const pageUp = (event: PointerEvent) => {
     const distance = event.clientX - initialLeft
-    if (pointerNum === 1) {
+    if (pointerNumber === 1) {
       if (distance) {
         pageNumber = Math.max(
           Math.min(
@@ -73,27 +86,58 @@
       }
       isPageDown = false
     }
-    pointerNum--
+    if (pointerNumber > 0) pointerNumber--
     clearTimeout(pageTimer)
     isPageDelay = false
   }
   const pageCancel = () => {
-    pointerNum = 0
+    pointerNumber = 0
     pageLeft.value = -screenWidth * pageNumber
     isPageDown = false
     clearTimeout(pageTimer)
     isPageDelay = false
   }
+  const keyup = (event: KeyboardEvent) => {
+    switch (event.key) {
+      case 'ArrowLeft':
+        if (pageNumber > 0) pageNumber--
+        break
+
+      case 'ArrowRight':
+        if (pageNumber < store.list.length - 1) pageNumber++
+        break
+    }
+    pageLeft.value = -screenWidth * pageNumber
+  }
+  const wheel = (event: WheelEvent) => {
+    if (event.deltaY > 0 && pageNumber < store.list.length - 1) pageNumber++
+    if (event.deltaY < 0 && pageNumber > 0) pageNumber--
+    pageLeft.value = -screenWidth * pageNumber
+  }
+  const toPage = (pageIndex: number) => {
+    pageNumber = pageIndex > pageNumber ? pageIndex - 2 : pageIndex - 1
+    pageLeft.value = -screenWidth * pageNumber
+  }
 </script>
 
 <template>
   <div
-    class="relative h-[100dvh] bg-gray-100 overflow-hidden touch-none select-none"
+    class="relative h-[100dvh] bg-zinc-100 dark:bg-zinc-800 overflow-hidden touch-none select-none"
     @pointerdown.left="pageDown"
     @pointermove="pageMove"
     @pointerup="pageUp"
+    @pointerleave="pageUp"
     @pointercancel="pageCancel"
+    @wheel="wheel"
   >
+    <a
+      class="absolute top-[20px] right-[20px] w-[24px] h-[24px] bg-white i-grommet-icons-github z-10 mix-blend-difference"
+      href="https://github.com/bngrid/bngrid"
+    ></a>
+    <button
+      class="absolute top-[20px] right-[60px] w-[24px] h-[24px] bg-white i-grommet-icons-sun dark:i-grommet-icons-moon dark:w-[24px] dark:h-[24px] dark:bg-white z-10 mix-blend-difference"
+      @click="toggleMode"
+    ></button>
     <div
       class="absolute flex h-full"
       :class="isPageDown ? 'duration-0' : 'duration-300'"
@@ -107,12 +151,27 @@
           class="relative grid"
           :style="siteStyle"
         >
-        <div
+          <div
             v-for="_ in store.site[0] * store.site[1]"
             class="rounded-[25%] border-2 border-white border-solid duration-300 opacity-60 mix-blend-difference"
           ></div>
         </div>
       </div>
+    </div>
+    <div
+      class="flex justify-between absolute inset-x-0 bottom-[30px] mx-auto mix-blend-difference"
+      :style="paginationStyle"
+    >
+      <div
+        v-for="pageIndex in store.list.length + 1"
+        class="w-[6px] h-[6px] rounded-[1.5px] bg-white opacity-60 cursor-pointer"
+        @click="toPage(pageIndex)"
+      ></div>
+      <div
+        class="absolute bg-white w-[18px] h-[6px] rounded-[1.5px]"
+        :class="isPageDown ? 'duration-0' : 'duration-300'"
+        :style="pointerStyle"
+      ></div>
     </div>
   </div>
 </template>
