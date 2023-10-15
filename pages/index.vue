@@ -131,11 +131,11 @@
     @wheel="wheel"
   >
     <a
-      class="absolute top-[20px] right-[20px] w-[24px] h-[24px] bg-white i-grommet-icons-github z-10 mix-blend-difference"
+      class="absolute top-[20px] right-[20px] w-[24px] h-[24px] bg-white i-charm-github z-10 mix-blend-difference"
       href="https://github.com/bngrid/bngrid"
     ></a>
     <button
-      class="absolute top-[20px] right-[60px] w-[24px] h-[24px] bg-white i-grommet-icons-sun dark:i-grommet-icons-moon dark:w-[24px] dark:h-[24px] dark:bg-white z-10 mix-blend-difference"
+      class="absolute top-[20px] right-[60px] w-[24px] h-[24px] bg-white i-charm-sun dark:i-charm-moon dark:w-[24px] dark:h-[24px] dark:bg-white z-10 mix-blend-difference"
       @click="toggleMode"
     ></button>
     <div

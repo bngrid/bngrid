@@ -25,7 +25,7 @@ export default <Partial<Config>>{
   },
   plugins: [
     iconsPlugin({
-      collections: getIconCollections(['grommet-icons'])
+      collections: getIconCollections(['charm'])
     })
   ]
 }

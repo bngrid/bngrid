@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@egoist/tailwindcss-icons": "latest",
-    "@iconify-json/grommet-icons": "latest",
+    "@iconify-json/charm": "latest",
     "@pinia/nuxt": "latest",
     "nanoid": "latest",
     "pinia": "latest"
