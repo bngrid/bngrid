@@ -60,16 +60,16 @@
   const pageMove = (event: PointerEvent) => {
     if (pointerNumber === 1) {
       pageLeft.value =
-        -screenWidth * pageNumber +
-        (event.clientX - initialLeft) /
+        pageLeft.value +
+        event.movementX /
           (pageLeft.value > 0 || pageLeft.value < -screenWidth * (store.list.length - 1)
             ? 3
             : 1)
     }
   }
   const pageUp = (event: PointerEvent) => {
-    const distance = event.clientX - initialLeft
     if (pointerNumber === 1) {
+      const distance = event.clientX - initialLeft
       if (distance) {
         pageNumber = Math.max(
           Math.min(
@@ -85,10 +85,13 @@
         pageLeft.value = -screenWidth * pageNumber
       }
       isPageDown = false
+      isPageDelay = false
+      clearTimeout(pageTimer)
     }
     if (pointerNumber > 0) pointerNumber--
-    clearTimeout(pageTimer)
-    isPageDelay = false
+  }
+  const pageleave = (event: PointerEvent) => {
+    if (event.pointerType === 'mouse') pageUp(event)
   }
   const pageCancel = () => {
     pointerNumber = 0
@@ -102,7 +105,6 @@
       case 'ArrowLeft':
         if (pageNumber > 0) pageNumber--
         break
-
       case 'ArrowRight':
         if (pageNumber < store.list.length - 1) pageNumber++
         break
@@ -126,7 +128,7 @@
     @pointerdown.left="pageDown"
     @pointermove="pageMove"
     @pointerup="pageUp"
-    @pointerleave="pageUp"
+    @pointerleave="pageleave"
     @pointercancel="pageCancel"
     @wheel="wheel"
   >
