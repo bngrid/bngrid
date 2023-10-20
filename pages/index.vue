@@ -3,11 +3,11 @@
     title: 'Home'
   })
   onMounted(() => {
-    pageWidth = page.value!.offsetWidth
-    onresize = () => {
-      pageWidth = page.value!.offsetWidth
-      pageLeft.value = -pageWidth * pageNumber
-    }
+    resizeObserver = new ResizeObserver(() => {
+      pageWidth.value = page.value!.offsetWidth
+      pageLeft.value = -pageWidth.value * pageNumber
+    })
+    resizeObserver.observe(page.value!)
     onkeyup = (event: KeyboardEvent) => {
       switch (event.key) {
         case 'ArrowLeft':
@@ -17,15 +17,19 @@
           if (pageNumber < store.list.length - 1) pageNumber++
           break
       }
-      pageLeft.value = -pageWidth * pageNumber
+      pageLeft.value = -pageWidth.value * pageNumber
     }
   })
   onUnmounted(() => {
-    onresize = null
+    resizeObserver.unobserve(page.value!)
     onkeyup = null
   })
   const pageStyle = computed(() => ({
-    left: `${pageLeft.value}px`
+    left: `${pageLeft.value}px`,
+    width: `${
+      (pageWidth.value ?? store.site[0] * (store.site[2] + store.site[3])) *
+      store.list.length
+    }px`
   }))
   const siteStyle = computed(() => ({
     gridTemplateColumns: `repeat(${store.site[0]}, ${store.site[2]}px)`,
@@ -40,17 +44,18 @@
   const pointerStyle = computed(() => ({
     left: `${pointerLeft.value}px`
   }))
+  let resizeObserver: ResizeObserver
   const store = useStore()
   const colorMode = useColorMode()
   const page = ref<HTMLElement | null>(null)
   const pageLeft = ref(0)
-  const pointerLeft = computed(() => (-pageLeft.value * 12) / pageWidth)
+  const pageWidth = ref(0)
+  const pointerLeft = computed(() => (-pageLeft.value * 12) / pageWidth.value)
   let pointerList: {
     id: number
     x: number
   }[] = []
   let isPageDelay = false
-  let pageWidth = 0
   let initialLeft = 0
   let pageNumber = 0
   let pageTimer = 0
@@ -61,7 +66,7 @@
     page.value!.setPointerCapture(event.pointerId)
     pointerList.push({ id: event.pointerId, x: event.screenX })
     if (pointerList.length === 1) {
-      initialLeft = event.clientX
+      initialLeft = event.screenX
       page.value!.onpointermove = pageMove
       pageTimer = +setTimeout(() => {
         isPageDelay = true
@@ -71,7 +76,7 @@
   const pageMove = (event: PointerEvent) => {
     pageLeft.value +=
       (event.screenX - pointerList.find((pointer) => pointer.id === event.pointerId)!.x) /
-      (pageLeft.value > 0 || pageLeft.value < -pageWidth * (store.list.length - 1)
+      (pageLeft.value > 0 || pageLeft.value < -pageWidth.value * (store.list.length - 1)
         ? 3
         : 1)
     pointerList.find((pointer) => pointer.id === event.pointerId)!.x = event.screenX
@@ -80,20 +85,20 @@
     page.value!.releasePointerCapture(event.pointerId)
     if (pointerList.length === 1) {
       page.value!.onpointermove = null
-      const distance = event.clientX - initialLeft
+      const distance = event.screenX - initialLeft
       if (distance) {
         pageNumber = Math.max(
           Math.min(
             isPageDelay
-              ? Math.floor(-pageLeft.value / pageWidth + 0.5)
+              ? Math.floor(-pageLeft.value / pageWidth.value + 0.5)
               : distance > 0
-              ? pageNumber - Math.ceil(distance / pageWidth)
-              : pageNumber - Math.floor(distance / pageWidth),
+              ? pageNumber - Math.ceil(distance / pageWidth.value)
+              : pageNumber - Math.floor(distance / pageWidth.value),
             store.list.length - 1
           ),
           0
         )
-        pageLeft.value = -pageWidth * pageNumber
+        pageLeft.value = -pageWidth.value * pageNumber
       }
       isPageDelay = false
       clearTimeout(pageTimer)
@@ -103,21 +108,21 @@
       1
     )
   }
-  const pageCancel = (event: PointerEvent) => {
+  const pageCancel = () => {
     page.value!.onpointermove = null
     pointerList = []
-    pageLeft.value = -pageWidth * pageNumber
+    pageLeft.value = -pageWidth.value * pageNumber
     clearTimeout(pageTimer)
     isPageDelay = false
   }
   const wheel = (event: WheelEvent) => {
     if (event.deltaY > 0 && pageNumber < store.list.length - 1) pageNumber++
     if (event.deltaY < 0 && pageNumber > 0) pageNumber--
-    pageLeft.value = -pageWidth * pageNumber
+    pageLeft.value = -pageWidth.value * pageNumber
   }
   const toPage = (pageIndex: number) => {
     pageNumber = pageIndex > pageNumber ? pageIndex - 2 : pageIndex - 1
-    pageLeft.value = -pageWidth * pageNumber
+    pageLeft.value = -pageWidth.value * pageNumber
   }
 </script>
 
@@ -138,18 +143,21 @@
     ></a>
     <button
       class="absolute top-[20px] right-[60px] w-[24px] h-[24px] bg-white i-charm-sun dark:i-charm-moon dark:w-[24px] dark:h-[24px] dark:bg-white z-10 mix-blend-difference"
-      :title="`切换到${colorMode.preference === 'dark' ? '浅色模式' : '深色模式'}`"
+      :title="`切换到${colorMode.preference === 'dark' ? '浅' : '深'}色模式`"
       @click="toggleMode"
       @pointerdown.stop
     ></button>
     <div
-      class="absolute flex h-full"
-      :class="pointerList.length ? 'duration-0' : 'duration-300'"
+      class="absolute flex h-full transition-[left,opacity]"
+      :class="[
+        pointerList.length ? 'duration-0' : 'duration-300',
+        page ? 'opacity-100' : 'opacity-0'
+      ]"
       :style="pageStyle"
     >
       <div
         v-for="pageIndex in store.list.length"
-        class="grid place-content-center w-screen"
+        class="grid place-content-center flex-auto"
       >
         <div
           class="relative grid"
