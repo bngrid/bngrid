@@ -123,12 +123,16 @@
     pageNumber = pageIndex > pageNumber ? pageIndex - 2 : pageIndex - 1
     pageLeft.value = -pageWidth.value * pageNumber
   }
-  const compMove = (position: number[]) => {
+  const compDown = (pageIndex: number) => {
+    store.list.push([])
+  }
+  const compMove = (pageIndex: number, compIndex: number, position: number[]) => {
     isCompMove.value = true
   }
   const compUp = (pageIndex: number, compIndex: number, position: number[]) => {
     isCompMove.value = false
-    store.list[pageIndex][compIndex].scope = [
+    position[0] += pageWidth.value * (pageIndex - pageNumber)
+    const tempScope = [
       Math.max(
         Math.min(
           Math.floor(
@@ -154,6 +158,35 @@
       store.list[pageIndex][compIndex].scope[2],
       store.list[pageIndex][compIndex].scope[3]
     ]
+    let isOverlap = false
+    for (let i = 0; i < store.list[pageNumber].length; i++) {
+      if (
+        store.list[pageNumber][i].id !== store.list[pageIndex][compIndex].id &&
+        store.list[pageNumber][i].scope[0] <
+          tempScope[0] +
+            tempScope[2] &&
+        store.list[pageNumber][i].scope[0] + store.list[pageNumber][i].scope[2] >
+          tempScope[0] &&
+        store.list[pageNumber][i].scope[1] <
+          tempScope[1] +
+            tempScope[3] &&
+        store.list[pageNumber][i].scope[1] + store.list[pageNumber][i].scope[3] >
+          tempScope[1]
+      ) {
+        isOverlap = true
+      }
+    }
+    if (!isOverlap) {
+      store.list[pageIndex][compIndex].scope = tempScope
+      if (pageNumber !== pageIndex) {
+        store.list[pageNumber].push(store.list[pageIndex].splice(compIndex, 1)[0])
+      }
+    }
+    store.list = store.list.filter((page) => page.length > 0)
+    if (pageNumber > store.list.length - 1) {
+      pageNumber = store.list.length - 1
+      pageLeft.value = -pageWidth.value * pageNumber
+    }
   }
 </script>
 
@@ -203,7 +236,8 @@
             v-for="(comp, compIndex) in page"
             :key="comp.id"
             :comp="comp"
-            @comp-move="(position) => compMove(position)"
+            @comp-down="compDown(pageIndex)"
+            @comp-move="(position) => compMove(pageIndex, compIndex, position)"
             @comp-up="(position) => compUp(pageIndex, compIndex, position)"
           />
         </div>

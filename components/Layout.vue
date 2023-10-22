@@ -7,6 +7,7 @@
     }
   }>()
   const emit = defineEmits<{
+    (e: 'compDown'): void
     (e: 'compMove', position: number[]): void
     (e: 'compUp', position: number[]): void
   }>()
@@ -42,7 +43,7 @@
       comp.value!.onpointermove = compMove
       compTimer = +setTimeout(() => {
         isCompDelay = true
-        console.log('长按')
+        emit('compDown')
       }, 600)
     }
   }
@@ -59,7 +60,6 @@
       } else if (isCompDelay) {
         event.stopPropagation()
         isCompMove.value = true
-        console.log('拖动')
         compPosition.value = [
           event.clientX -
             comp.value!.offsetParent!.getBoundingClientRect().x -
@@ -78,11 +78,8 @@
       comp.value!.onpointermove = null
       if (!isCompCancel && !isCompDelay) {
         clearTimeout(compTimer)
-        console.log('点击')
       } else if (isCompDelay && !isCompMove.value) {
-        // 长按结束
       } else if (isCompMove.value) {
-        console.log('放下')
         emit('compUp', compPosition.value)
       } else {
       }
@@ -93,6 +90,7 @@
     if (pointerNumber.value > 0) pointerNumber.value--
   }
   const compCancel = (event: PointerEvent) => {
+    emit('compUp', compPosition.value)
     pointerNumber.value = 0
     comp.value!.releasePointerCapture(event.pointerId)
     comp.value!.onpointermove = null
