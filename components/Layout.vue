@@ -78,6 +78,10 @@
       comp.value!.onpointermove = null
       if (!isCompCancel && !isCompDelay) {
         clearTimeout(compTimer)
+        isClick.value = true
+        setTimeout(() => {
+          isClick.value = false
+        }, 600)
       } else if (isCompDelay && !isCompMove.value) {
       } else if (isCompMove.value) {
         emit('compUp', compPosition.value)
@@ -99,6 +103,7 @@
     isCompDelay = false
     isCompMove.value = false
   }
+  const isClick = ref(false)
 </script>
 
 <template>
@@ -115,6 +120,9 @@
     @pointerup="compUp"
     @pointercancel="compCancel"
   >
-    <component :is="props.comp.name" />
+    <component
+      :is="props.comp.name"
+      :is-click="isClick"
+    />
   </div>
 </template>
