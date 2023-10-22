@@ -8,18 +8,22 @@ export default <Partial<Config>>{
       keyframes: {
         press: {
           '0%': { transform: 'scale(1)' },
-          '20%, 60%': { transform: 'scale(.95)' },
-          '100%': { transform: 'scale(1.05)' }
+          '20%, 60%': { transform: 'scale(.98)' },
+          '100%': { transform: 'scale(1.02)' }
         },
         lift: {
-          '0%': { transform: 'scale(1.05)' },
-          '60%': { transform: 'scale(.95)' },
+          '0%': { transform: 'scale(1.02)' },
+          '60%': { transform: 'scale(.98)' },
           '100%': { transform: 'scale(1)' }
         }
       },
       animation: {
         press: 'press 600ms ease-in-out 1 forwards',
         lift: 'lift 300ms ease-in-out 1'
+      },
+      boxShadow: {
+        light: '4px 4px 4px #d4d4d8, -4px -4px 4px #ffffff',
+        dark: '4px 4px 4px #18181b, -4px -4px 4px #52525b'
       }
     }
   },

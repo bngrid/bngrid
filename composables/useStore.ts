@@ -3,18 +3,19 @@ export const useStore = defineStore('store', () => {
     [
       {
         id: 'BNID-0',
-        name: 'Slide',
+        name: 'Time',
         scope: [2, 1, 3, 2]
       }
     ],
     [
       {
         id: 'BNID-1',
-        name: 'Slide',
-        scope: [2, 1, 3, 2]
+        name: 'Web',
+        scope: [1, 2, 1, 2]
       }
     ],
-    [], []
+    [],
+    []
   ])
   const site = ref([4, 7, 60, 20])
 

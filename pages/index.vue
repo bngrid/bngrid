@@ -4,7 +4,7 @@
   })
   onMounted(() => {
     resizeObserver = new ResizeObserver(() => {
-      pageWidth.value = page.value!.offsetWidth
+      pageWidth.value = page.value!.clientWidth
       pageLeft.value = -pageWidth.value * pageNumber
     })
     resizeObserver.observe(page.value!)
@@ -26,10 +26,7 @@
   })
   const pageStyle = computed(() => ({
     left: `${pageLeft.value}px`,
-    width: `${
-      (pageWidth.value ?? store.site[0] * (store.site[2] + store.site[3])) *
-      store.list.length
-    }px`
+    width: `${(pageWidth.value ?? 0) * store.list.length}px`
   }))
   const siteStyle = computed(() => ({
     gridTemplateColumns: `repeat(${store.site[0]}, ${store.site[2]}px)`,
@@ -50,6 +47,7 @@
   const page = ref<HTMLElement | null>(null)
   const pageLeft = ref(0)
   const pageWidth = ref(0)
+  const isCompMove = ref(false)
   const pointerLeft = computed(() => (-pageLeft.value * 12) / pageWidth.value)
   let pointerList: {
     id: number
@@ -64,9 +62,9 @@
   }
   const pageDown = (event: PointerEvent) => {
     page.value!.setPointerCapture(event.pointerId)
-    pointerList.push({ id: event.pointerId, x: event.screenX })
+    pointerList.push({ id: event.pointerId, x: event.clientX })
     if (pointerList.length === 1) {
-      initialLeft = event.screenX
+      initialLeft = event.clientX
       page.value!.onpointermove = pageMove
       pageTimer = +setTimeout(() => {
         isPageDelay = true
@@ -75,17 +73,17 @@
   }
   const pageMove = (event: PointerEvent) => {
     pageLeft.value +=
-      (event.screenX - pointerList.find((pointer) => pointer.id === event.pointerId)!.x) /
+      (event.clientX - pointerList.find((pointer) => pointer.id === event.pointerId)!.x) /
       (pageLeft.value > 0 || pageLeft.value < -pageWidth.value * (store.list.length - 1)
         ? 3
         : 1)
-    pointerList.find((pointer) => pointer.id === event.pointerId)!.x = event.screenX
+    pointerList.find((pointer) => pointer.id === event.pointerId)!.x = event.clientX
   }
   const pageUp = (event: PointerEvent) => {
     page.value!.releasePointerCapture(event.pointerId)
     if (pointerList.length === 1) {
       page.value!.onpointermove = null
-      const distance = event.screenX - initialLeft
+      const distance = event.clientX - initialLeft
       if (distance) {
         pageNumber = Math.max(
           Math.min(
@@ -108,7 +106,8 @@
       1
     )
   }
-  const pageCancel = () => {
+  const pageCancel = (event: PointerEvent) => {
+    page.value!.releasePointerCapture(event.pointerId)
     page.value!.onpointermove = null
     pointerList = []
     pageLeft.value = -pageWidth.value * pageNumber
@@ -124,13 +123,45 @@
     pageNumber = pageIndex > pageNumber ? pageIndex - 2 : pageIndex - 1
     pageLeft.value = -pageWidth.value * pageNumber
   }
+  const compMove = (position: number[]) => {
+    isCompMove.value = true
+  }
+  const compUp = (pageIndex: number, compIndex: number, position: number[]) => {
+    isCompMove.value = false
+    store.list[pageIndex][compIndex].scope = [
+      Math.max(
+        Math.min(
+          Math.floor(
+            (position[0] + (store.site[2] + store.site[3]) / 2) /
+              (store.site[2] + store.site[3]) +
+              1
+          ),
+          store.site[0] + 1 - store.list[pageIndex][compIndex].scope[2]
+        ),
+        1
+      ),
+      Math.max(
+        Math.min(
+          Math.floor(
+            (position[1] + (store.site[2] + store.site[3]) / 2) /
+              (store.site[2] + store.site[3]) +
+              1
+          ),
+          store.site[1] + 1 - store.list[pageIndex][compIndex].scope[3]
+        ),
+        1
+      ),
+      store.list[pageIndex][compIndex].scope[2],
+      store.list[pageIndex][compIndex].scope[3]
+    ]
+  }
 </script>
 
 <template>
   <div
     class="relative h-full bg-zinc-100 dark:bg-zinc-800 overflow-hidden touch-none select-none duration-300"
     ref="page"
-    @pointerdown.left="pageDown"
+    @pointerdown.left.stop="pageDown"
     @pointerup="pageUp"
     @pointercancel="pageCancel"
     @wheel="wheel"
@@ -156,7 +187,7 @@
       :style="pageStyle"
     >
       <div
-        v-for="pageIndex in store.list.length"
+        v-for="(page, pageIndex) in store.list"
         class="grid place-content-center flex-auto"
       >
         <div
@@ -165,8 +196,16 @@
         >
           <div
             v-for="_ in store.site[0] * store.site[1]"
-            class="rounded-[25%] border-2 border-white border-solid duration-300 opacity-60 mix-blend-difference"
+            class="rounded-[25%] border-2 border-white border-solid duration-300 mix-blend-difference"
+            :class="isCompMove ? 'opacity-60' : 'opacity-0'"
           ></div>
+          <Layout
+            v-for="(comp, compIndex) in page"
+            :key="comp.id"
+            :comp="comp"
+            @comp-move="(position) => compMove(position)"
+            @comp-up="(position) => compUp(pageIndex, compIndex, position)"
+          />
         </div>
       </div>
     </div>
