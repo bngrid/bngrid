@@ -15,6 +15,11 @@ export const useStore = defineStore('store', () => {
         id: 'BNID-2',
         name: 'Text',
         scope: [1, 3, 2, 2]
+      },
+      {
+        id: 'BNID-3',
+        name: 'Search',
+        scope: [1, 5, 4, 1]
       }
     ]
   ])

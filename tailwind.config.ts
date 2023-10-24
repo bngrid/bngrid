@@ -23,7 +23,9 @@ export default <Partial<Config>>{
       },
       boxShadow: {
         light: '4px 4px 4px #d4d4d8, -4px -4px 4px #ffffff',
-        dark: '4px 4px 4px #18181b, -4px -4px 4px #52525b'
+        dark: '4px 4px 4px #18181b, -4px -4px 4px #52525b',
+        'inner-light': '4px 4px 4px #ffffff, -4px -4px 4px #d4d4d8',
+        'inner-dark': '4px 4px 4px #52525b, -4px -4px 4px #18181b'
       }
     }
   },

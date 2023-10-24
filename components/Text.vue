@@ -2,14 +2,17 @@
   const props = defineProps<{
     isClick: boolean
   }>()
-  watch(props, (newProps) => {
-    if (newProps.isClick) {
-      isInput.value = true
+  watch(
+    () => props.isClick,
+    (newIsClick) => {
+      if (newIsClick) {
+        isInput.value = true
+      }
     }
-  })
+  )
   const isInput = ref(false)
   const text = useCookie('text')
-  text.value = text.value || ''
+  text.value = text.value || '文字'
 </script>
 
 <template>
@@ -20,5 +23,10 @@
     v-model="text"
     @blur="isInput = false"
   />
-  <div v-else class="text-center text-5xl leading-[140px]">{{ text }}</div>
+  <div
+    v-else
+    class="text-center text-5xl leading-[140px]"
+  >
+    {{ text }}
+  </div>
 </template>
