@@ -1,0 +1,117 @@
+<div class="loader">
+  <div class="blocks">
+    <div class="block-a"></div>
+    <div class="block-b"></div>
+    <div class="block-c"></div>
+  </div>
+</div>
+
+<style>
+  html,
+  body,
+  #__nuxt {
+    height: 100%;
+  }
+  body {
+    margin: 0;
+  }
+  .loader {
+    height: 100%;
+    display: grid;
+    place-content: center;
+  }
+  .blocks {
+    position: relative;
+    width: 45px;
+    height: 45px;
+  }
+  .block-a,
+  .block-b,
+  .block-c {
+    position: absolute;
+    background-color: #e1e1e133;
+    backdrop-filter: blur(30px);
+    border-radius: 5px;
+    animation: 3s linear infinite;
+  }
+  .block-a {
+    animation-name: loader-a;
+  }
+  .block-b {
+    animation-name: loader-b;
+  }
+  .block-c {
+    animation-name: loader-c;
+  }
+  @keyframes loader-a {
+    0%,
+    6.25% {
+      transform: translate3d(0, 0, 0);
+      width: 20px;
+      height: 45px;
+    }
+    12.5%,
+    68.75% {
+      transform: translate3d(0, 0, 0);
+      width: 20px;
+      height: 20px;
+    }
+    75%,
+    81.25% {
+      transform: translate3d(0, 0, 0);
+      width: 45px;
+      height: 20px;
+    }
+    87.5%,
+    100% {
+      transform: translate3d(25px, 0, 0);
+      width: 20px;
+      height: 20px;
+    }
+  }
+  @keyframes loader-b {
+    0%,
+    43.75% {
+      transform: translate3d(25px, 0, 0);
+      width: 20px;
+      height: 20px;
+    }
+    50%,
+    56.25% {
+      transform: translate3d(25px, 0, 0);
+      width: 20px;
+      height: 45px;
+    }
+    62.5%,
+    100% {
+      transform: translate3d(25px, 25px, 0);
+      width: 20px;
+      height: 20px;
+    }
+  }
+  @keyframes loader-c {
+    0%,
+    18.75% {
+      transform: translate3d(25px, 25px, 0);
+      width: 20px;
+      height: 20px;
+    }
+    25%,
+    31.25% {
+      transform: translate3d(0, 25px, 0);
+      width: 45px;
+      height: 20px;
+    }
+    37.5%,
+    93.75% {
+      transform: translate3d(0, 25px, 0);
+      width: 20px;
+      height: 20px;
+    }
+    100% {
+      transform: translate3d(0, 0, 0);
+      width: 20px;
+      height: 45px;
+    }
+  }
+</style>

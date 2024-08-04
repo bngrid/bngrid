@@ -1,0 +1,19 @@
+@font-face {
+  font-family: bnfont;
+  src: url('~/assets/fonts/normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: bnfont;
+  src: url('~/assets/fonts/bold.woff2') format('woff2');
+  font-weight: bold;
+}
+html,
+body,
+#__nuxt {
+  height: 100%;
+}
+body {
+  margin: 0;
+  background: url('/wallpaper.webp') center / cover;
+  font-family: bnfont;
+}
