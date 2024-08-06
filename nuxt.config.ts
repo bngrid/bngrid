@@ -12,7 +12,7 @@ export default defineNuxtConfig({
       meta: [
         {
           name: 'description',
-          content: 'bngrid - 华容网格 原子组件 丝滑动画'
+          content: 'bngrid - 华容网格 原子组件 流畅动画'
         },
         {
           name: 'theme-color',
