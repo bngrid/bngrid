@@ -16,7 +16,7 @@ function decipher(value: string) {
   return original
 }
 
-export default async (token?: string) => {
+export default async (auth: boolean, token?: string) => {
   if (!token) {
     return response(false, '未获取到令牌')
   }
@@ -32,6 +32,9 @@ export default async (token?: string) => {
   }
   if (!user.status) {
     return response(false, '该账户已被封禁')
+  }
+  if (auth && user.username !== process.env.dbaccount) {
+    return response(false, '权限不足')
   }
   return response(true, '授权成功', { collection, user })
 }

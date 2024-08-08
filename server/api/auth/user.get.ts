@@ -11,7 +11,7 @@ function timeout(date: Date) {
 
 export default defineEventHandler(async event => {
   const token = getHeader(event, 'authorization')
-  const verification = await verify(token)
+  const verification = await verify(false, token)
   if (!verification.flag) {
     return verification
   }

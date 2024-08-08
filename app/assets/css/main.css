@@ -7,13 +7,42 @@
   src: url('~/assets/fonts/bold.woff2') format('woff2');
   font-weight: bold;
 }
+:root {
+  --theme-color: #00e696;
+  --info-color: #6699ff;
+  --warn-color: #ff9966;
+  --error-color: #ff6666;
+}
 html,
 body,
 #__nuxt {
   height: 100%;
 }
 body {
-  margin: 0;
   background: url('/wallpaper.webp') center / cover;
+}
+*,
+*::after {
+  box-sizing: border-box;
   font-family: bnfont;
+  margin: 0;
+  transition-duration: 300ms;
+  font-size: 18px;
+  line-height: 27px;
+  vertical-align: -3px;
+}
+h1 {
+  font-size: 36px;
+  line-height: 45px;
+}
+.button {
+  cursor: pointer;
+}
+.button:active {
+  transform: scale(0.9);
+  filter: brightness(0.6);
+}
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
 }

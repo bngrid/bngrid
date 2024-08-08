@@ -10,6 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@icon-park/vue-next": "^1.4.2",
     "mongodb": "^6.8.0",
     "nodemailer": "^6.9.14",
     "vue": "latest"

@@ -15,9 +15,9 @@ export default (
       }
     })
     const reasons = [
-      `我们即将创建您的 BNGRID 账户，请在您的<a href="${process.env.hostname}/verify/${id}"style="color:#00e696">邮箱验证页面</a>`,
+      `我们即将创建您的 BNGRID 账户，请在您的验证码登录页面`,
       `您正在尝试修改您的用户信息，请在您的用户信息修改页面`,
-      `您正在尝试通过邮箱登录，请在您的邮箱登录页面`
+      `您正在尝试通过邮箱登录，请在您的验证码登录页面`
     ]
     transporter.sendMail(
       {

@@ -10,26 +10,24 @@ function cipher(value: string, token: string) {
 }
 
 export default defineEventHandler(async event => {
-  const { account, password } = await readBody(event)
-  if (!account || !password) {
-    return response(false, '账号和密码不能为空')
+  const { account, code } = await readBody(event)
+  if (!account || !code) {
+    return response(false, '账号和验证码不能为空')
   }
   const db = await database()
   const collection = db.collection<User>('user')
   const user = await collection.findOne({ account })
-  if (!user || user.password !== hmac(password)) {
-    return response(false, '账号或密码错误')
+  if (!user || user.token !== code) {
+    return response(false, '账号或验证码错误')
   }
   if (!user.status) {
     return response(false, '该账户已被封禁')
-  }
-  if (!user.active) {
-    return response(false, '该账户邮箱尚未验证')
   }
   const token = random()
   collection.updateOne(user, {
     $set: {
       token,
+      active: true,
       updata: new Date()
     }
   })

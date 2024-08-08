@@ -1,14 +1,11 @@
 import { Verify } from '~~/server/types'
 
 export default defineEventHandler(async event => {
-  const verification = await verify(getHeader(event, 'authorization'))
+  const verification = await verify(true, getHeader(event, 'authorization'))
   if (!verification.flag) {
     return verification
   }
-  const { collection, user } = <Verify>verification.data
-  if (user.username !== process.env.dbaccount) {
-    return response(false, '权限不足')
-  }
+  const { collection } = <Verify>verification.data
   const { username, account, password } = await readBody(event)
   if (!username || !account || !password) {
     return response(false, '用户名、账号和密码不能为空')

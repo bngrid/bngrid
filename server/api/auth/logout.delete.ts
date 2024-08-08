@@ -2,7 +2,7 @@ import { Verify } from '~~/server/types'
 import verify from '~~/server/utils/verify'
 
 export default defineEventHandler(async event => {
-  const verification = await verify(getHeader(event, 'authorization'))
+  const verification = await verify(false, getHeader(event, 'authorization'))
   if (!verification.flag) {
     return verification
   }
