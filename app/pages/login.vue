@@ -1,4 +1,5 @@
 <script setup lang="ts">
+  import type { CookieRef } from '#app'
   import { Mail, Lock, Protect } from '@icon-park/vue-next'
   const form = ref({
     account: '',
@@ -7,7 +8,20 @@
   })
   const options = ref(['密码登录', '验证码登录'])
   const option = ref<number>(0)
+  const keep = useCookie('keep', {
+    maxAge: 60 * 60 * 24 * 365
+  })
+  keep.value = keep.value || 'true'
   const remember = ref(true)
+  watch(remember, newValue => {
+    keep.value = `${newValue}`
+  })
+  const token = useCookie('token', {
+    maxAge: !!keep.value ? 60 * 60 * 24 * 365 : undefined
+  })
+  const addToast = useToast()
+  const router = useRouter()
+  token.value = token.value || ''
   const loading = ref(false)
   async function login() {
     loading.value = true
@@ -15,8 +29,12 @@
       method: 'POST',
       body: form.value
     })
-    console.log(data)
+    addToast(data)
     loading.value = false
+    if (data.flag) {
+      token.value = data.data
+      router.push('/')
+    }
   }
   async function sendcode() {
     const data = await $fetch('/api/auth/verify', {
@@ -26,7 +44,7 @@
         index: 2
       }
     })
-    console.log(data)
+    addToast(data)
   }
 </script>
 
@@ -82,25 +100,28 @@
 
 <style scoped>
   .background {
+    position: relative;
     height: 100%;
-    display: grid;
-    place-content: center;
   }
   .card {
-    position: relative;
+    position: absolute;
+    inset: 0;
     width: 660px;
+    max-width: calc(100% - 60px);
     height: 400px;
+    max-height: calc(100% - 60px);
     display: flex;
     border-radius: 9px;
     overflow: hidden;
     box-shadow: 0 0 6px #1e1e1e80;
+    margin: auto;
   }
   .illustration {
-    width: 240px;
+    width: 36%;
     height: 100%;
   }
   .form {
-    width: 420px;
+    width: 64%;
     height: 100%;
     background-color: #1e1e1e80;
     backdrop-filter: blur(30px);
@@ -132,5 +153,20 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+  }
+  @media (orientation: portrait) {
+    .card {
+      width: 420px;
+      height: 60%;
+    }
+    .illustration {
+      display: none;
+    }
+    .form {
+      width: 100%;
+    }
+    .logo {
+      display: none;
+    }
   }
 </style>

@@ -20,6 +20,7 @@ body,
 }
 body {
   background: url('/wallpaper.webp') center / cover;
+  overflow: hidden;
 }
 *,
 *::after {

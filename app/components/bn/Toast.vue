@@ -1,43 +1,22 @@
 <script setup lang="ts">
-  import { CloseSmall } from '@icon-park/vue-next'
-
-  type Toast = {
-    flag: boolean
-    msg: string
-  }
-  const toasts = ref<Toast[]>([
-    {
-      id: 0,
-      flag: true,
-      msg: '登录成功'
-    },
-    {
-      id: 1,
-      flag: false,
-      msg: '账号或密码错误'
-    },
-    {
-      id: 2,
-      flag: false,
-      msg: '厨房和萨度线擦上新娘当场姆加德你娃上学额外的飞洒等下私底下加密哦我是苦笑都没呢扫测今晚考试模拟的讽刺哦啊发送的批次v均免费发'
-    }
-  ])
+  const toasts = useToasts()
 </script>
 
 <template>
   <div class="pack">
-    <div
-      v-for="toast in toasts"
-      :key="toast.id"
-      class="toast"
-      :style="{
-        borderColor: toast.flag ? 'var(--theme-color)' : 'var(--error-color)',
-        color: toast.flag ? 'var(--theme-color)' : 'var(--error-color)'
-      }"
-    >
-      <span>{{ toast.msg }}</span>
-      <CloseSmall />
-    </div>
+    <TransitionGroup name="toast">
+      <div
+        v-for="toast in toasts"
+        :key="toast.id"
+        class="toast"
+        :style="{
+          borderColor: toast.flag ? 'var(--theme-color)' : 'var(--error-color)',
+          color: toast.flag ? 'var(--theme-color)' : 'var(--error-color)'
+        }"
+      >
+        <span>{{ toast.msg }}</span>
+      </div>
+    </TransitionGroup>
   </div>
 </template>
 
@@ -61,5 +40,10 @@
     display: flex;
     justify-content: space-between;
     gap: 15px;
+  }
+  .toast-enter-from,
+  .toast-leave-to {
+    opacity: 0;
+    transform: translateX(30px);
   }
 </style>

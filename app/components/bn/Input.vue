@@ -105,12 +105,12 @@
     height: 60px;
     padding: 6px 9px;
   }
+  .pack:has(:valid) {
+    border-bottom-color: var(--theme-color);
+  }
   .pack:focus-within,
   .pack:has(:placeholder-shown) {
     border-bottom-color: #ffffff;
-  }
-  .pack:has(:valid) {
-    border-bottom-color: var(--theme-color);
   }
   .input {
     min-width: 0;

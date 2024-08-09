@@ -10,3 +10,5 @@
   <NuxtPage />
   <BnToast />
 </template>
+
+<style></style>

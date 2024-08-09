@@ -2,7 +2,7 @@
   import { Login } from '@icon-park/vue-next'
 
   defineProps<{
-    type: string
+    type: 'button' | 'submit' | 'reset' | undefined
     loading: boolean
   }>()
 </script>
