@@ -1,0 +1,106 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.24 0 0);
+}
+
+.dark {
+  --background: oklch(0.24 0 0);
+  --foreground: oklch(1 0 0);
+}
+
+@theme inline {
+  /* 颜色 */
+  --color-background: var(--background); /* #1E1E1E */
+  --color-foreground: var(--foreground); /* #FFFFFF */
+  --color-theme: oklch(0.69 0.1599 262.84); /* #6699FF */
+  --color-info: oklch(0.57 0.2385 272.09); /* #4D5CFF */
+  --color-success: oklch(0.88 0.2232 148.57); /* #4DFF7F */
+  --color-warning: oklch(0.89 0.1575 93.51); /* #FFD94D */
+  --color-error: oklch(0.67 0.2146 25.04); /* #FF4D4D */
+
+  /* 字体 */
+  --font-family: var(--font);
+
+  /* 动画 */
+  --animate-loader-a: loader-a 3s linear infinite;
+  --animate-loader-b: loader-b 3s linear infinite;
+  --animate-loader-c: loader-c 3s linear infinite;
+  @keyframes loader-a {
+    0%,
+    6.25% {
+      transform: translate3d(0, 0, 0);
+      width: 1.2rem;
+      height: 2.7rem;
+    }
+    12.5%,
+    68.75% {
+      transform: translate3d(0, 0, 0);
+      width: 1.2rem;
+      height: 1.2rem;
+    }
+    75%,
+    81.25% {
+      transform: translate3d(0, 0, 0);
+      width: 2.7rem;
+      height: 1.2rem;
+    }
+    87.5%,
+    100% {
+      transform: translate3d(1.5rem, 0, 0);
+      width: 1.2rem;
+      height: 1.2rem;
+    }
+  }
+  @keyframes loader-b {
+    0%,
+    43.75% {
+      transform: translate3d(1.5rem, 0, 0);
+      width: 1.2rem;
+      height: 1.2rem;
+    }
+    50%,
+    56.25% {
+      transform: translate3d(1.5rem, 0, 0);
+      width: 1.2rem;
+      height: 2.7rem;
+    }
+    62.5%,
+    100% {
+      transform: translate3d(1.5rem, 1.5rem, 0);
+      width: 1.2rem;
+      height: 1.2rem;
+    }
+  }
+  @keyframes loader-c {
+    0%,
+    18.75% {
+      transform: translate3d(1.5rem, 1.5rem, 0);
+      width: 1.2rem;
+      height: 1.2rem;
+    }
+    ,
+    25%,
+    31.25% {
+      transform: translate3d(0, 1.5rem, 0);
+      width: 2.7rem;
+      height: 1.2rem;
+    }
+    ,
+    37.5%,
+    93.75% {
+      transform: translate3d(0, 1.5rem, 0);
+      width: 1.2rem;
+      height: 1.2rem;
+    }
+    ,
+    100% {
+      transform: translate3d(0, 0, 0);
+      width: 1.2rem;
+      height: 2.7rem;
+    }
+  }
+}
