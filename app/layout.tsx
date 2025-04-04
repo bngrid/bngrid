@@ -44,7 +44,7 @@ export const viewport: Viewport = {
 
 const RootLayout = ({ children }: { children: ReactNode }) => {
   return (
-    <html lang="zh-CN" className="h-full">
+    <html lang="zh-CN" className="dark h-full">
       <body
         className={clsx(
           'font-family bg-background text-foreground pointer-events-none h-full touch-none leading-[1.2rem] antialiased select-none',
