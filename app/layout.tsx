@@ -1,7 +1,10 @@
 import '@/assets/globals.css'
+import Setup from '@/components/setup'
+import Providers from '@/providers'
 import clsx from 'clsx'
 import type { Metadata, Viewport } from 'next'
 import localFont from 'next/font/local'
+import { ReactNode } from 'react'
 
 const font = localFont({
   src: '../assets/font.woff2',
@@ -39,7 +42,7 @@ export const viewport: Viewport = {
   colorScheme: 'dark light'
 }
 
-const RootLayout = ({ children }: { children: React.ReactNode }) => {
+const RootLayout = ({ children }: { children: ReactNode }) => {
   return (
     <html lang="zh-CN" className="h-full">
       <body
@@ -48,7 +51,10 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
           font.variable
         )}
       >
-        {children}
+        <Providers>
+          <Setup />
+          {children}
+        </Providers>
       </body>
     </html>
   )
