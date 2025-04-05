@@ -3,7 +3,7 @@
 import { Data } from '@/types/server'
 import { cookies } from 'next/headers'
 
-export async function login(): Data<any> {
+export async function login(): Data<{ state: { theme: string } }> {
   const cookieStore = await cookies()
   const theme = cookieStore.get('theme')
   if (!theme) {

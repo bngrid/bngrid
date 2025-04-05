@@ -7,7 +7,7 @@ const LoginPage = () => {
   async function getTheme() {
     const data = await login()
     if (!data.success) {
-      console.log('未找到')
+      return console.log('未找到')
     }
     console.log(data.result.state.theme)
   }

@@ -86,7 +86,9 @@ const Button = ({
     },
     up: event => {
       clearTimeout(data.timer)
-      data.timer && onTap?.(event)
+      if (data.timer) {
+        onTap?.(event)
+      }
       anime({
         target: value => ({
           ...value,
