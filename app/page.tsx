@@ -2,7 +2,7 @@
 
 import { useThemeStore } from '@/providers/theme-store'
 import Button from '@/ui/button'
-import { Check, Moon, Sun } from 'lucide-react'
+import { Moon, Sun } from 'lucide-react'
 
 export default function Home() {
   const { theme, toggleTheme } = useThemeStore(state => state)

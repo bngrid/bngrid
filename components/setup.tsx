@@ -18,7 +18,7 @@ const Setup = () => {
     return () => {
       onresize = null
     }
-  }, [])
+  }, [setParam])
   useEffect(() => {
     document.documentElement.style.fontSize = `${0.5 * size}px`
   }, [size])
