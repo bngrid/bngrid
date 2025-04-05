@@ -13,7 +13,6 @@
 }
 
 @theme inline {
-  /* 颜色 */
   --color-background: var(--background); /* #1E1E1E */
   --color-foreground: var(--foreground); /* #FFFFFF */
   --color-theme: oklch(0.69 0.1599 262.84); /* #6699FF */
@@ -22,10 +21,10 @@
   --color-warning: oklch(0.89 0.1575 93.51); /* #FFD94D */
   --color-error: oklch(0.67 0.2146 25.04); /* #FF4D4D */
 
-  /* 字体 */
   --font-family: var(--font);
 
-  /* 动画 */
+  --spacing: 0.5rem;
+
   --animate-loader-a: loader-a 3s linear infinite;
   --animate-loader-b: loader-b 3s linear infinite;
   --animate-loader-c: loader-c 3s linear infinite;
@@ -103,4 +102,9 @@
       height: 2.7rem;
     }
   }
+}
+
+.lucide {
+  width: 1.2rem;
+  height: 1.2rem;
 }

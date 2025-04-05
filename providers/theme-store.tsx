@@ -3,7 +3,7 @@
 import { ReactNode, createContext, useContext, useRef } from 'react'
 import { useStore } from 'zustand'
 
-import { type ThemeStore, createThemeStore } from '@/stores/theme-store'
+import { type ThemeStore, createThemeStore } from '@/stores/theme'
 
 export type ThemeStoreApi = ReturnType<typeof createThemeStore>
 

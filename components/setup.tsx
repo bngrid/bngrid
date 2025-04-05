@@ -1,7 +1,7 @@
 'use client'
 
-import { useParamStore } from '@/providers/param-store-provider'
-import { useThemeStore } from '@/providers/theme-store-provider'
+import { useParamStore } from '@/providers/param-store'
+import { useThemeStore } from '@/providers/theme-store'
 import debounce from '@/utils/debounce'
 import { useEffect } from 'react'
 

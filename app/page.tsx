@@ -1,6 +1,8 @@
 'use client'
 
-import { useThemeStore } from '@/providers/theme-store-provider'
+import { useThemeStore } from '@/providers/theme-store'
+import Button from '@/ui/button'
+import { Check } from 'lucide-react'
 
 export default function Home() {
   const { theme, toggleTheme } = useThemeStore(state => state)
@@ -13,6 +15,9 @@ export default function Home() {
       >
         {theme}
       </button>
+      <Button className="bg-theme text-white" icon={<Check />}>
+        <span>对</span>
+      </Button>
     </div>
   )
 }

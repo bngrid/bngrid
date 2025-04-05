@@ -3,7 +3,7 @@
 import { ReactNode, createContext, useContext, useRef } from 'react'
 import { useStore } from 'zustand'
 
-import { type ParamStore, createParamStore } from '@/stores/param-store'
+import { type ParamStore, createParamStore } from '@/stores/param'
 
 export type ParamStoreApi = ReturnType<typeof createParamStore>
 
