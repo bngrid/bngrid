@@ -47,7 +47,7 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
     <html lang="zh-CN" className="dark h-full">
       <body
         className={clsx(
-          'font-family bg-background text-foreground pointer-events-none h-full touch-none leading-[1.2rem] antialiased select-none',
+          'font-family bg-background text-foreground h-full touch-none leading-[1.2rem] antialiased select-none',
           font.variable
         )}
       >

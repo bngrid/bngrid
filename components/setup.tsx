@@ -9,6 +9,7 @@ const Setup = () => {
   const { size, setParam } = useParamStore(state => state)
   const { theme } = useThemeStore(state => state)
   useEffect(() => {
+    document.oncontextmenu = event => event.preventDefault()
     function initParam() {
       setParam(innerWidth, innerHeight)
     }

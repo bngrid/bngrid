@@ -8,9 +8,9 @@ const usePointer = (
     data: Record<string, any>,
     bubble: (event: PointerEvent) => void
   ) => {
-    down: (event: PointerEvent) => void
-    move: (event: PointerEvent) => void
-    up: (event: PointerEvent) => void
+    down: (event: PointerEvent, element: HTMLDivElement) => void
+    move: (event: PointerEvent, element: HTMLDivElement) => void
+    up: (event: PointerEvent, element: HTMLDivElement) => void
   }
 ) => {
   const ref = useRef<HTMLDivElement>(null)
@@ -45,12 +45,12 @@ const usePointer = (
       }
       element.setPointerCapture(event.pointerId)
       pointerManager.set(id, event.pointerId)
-      down(event)
+      down(event, element)
     }
 
     element.onpointermove = event => {
       if (pointerManager.get(id) === event.pointerId) {
-        move(event)
+        move(event, element)
       }
     }
 
@@ -58,7 +58,7 @@ const usePointer = (
       if (pointerManager.get(id) === event.pointerId) {
         element.releasePointerCapture(event.pointerId)
         pointerManager.delete(id)
-        up(event)
+        up(event, element)
       }
     }
 
