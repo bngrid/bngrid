@@ -1,4 +1,4 @@
-import cookieStore from '@/utils/cookie-store'
+import cookieStore from '@/lib/client/cookie-store'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import { createStore } from 'zustand/vanilla'
 

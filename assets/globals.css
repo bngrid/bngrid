@@ -1,5 +1,7 @@
 @import 'tailwindcss';
 
+@plugin 'tailwindcss-animate';
+
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
@@ -106,6 +108,9 @@
 
 * {
   pointer-events: none;
+  transition:
+    background-color 300ms ease-in-out,
+    color 300ms ease-in-out;
 }
 
 .lucide {

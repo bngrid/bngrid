@@ -1,7 +1,7 @@
 'use client'
 
+import { login } from '@/api/auth'
 import Button from '@/components/ui/button'
-import { login } from '@/lib/server/auth'
 
 const LoginPage = () => {
   async function getTheme() {

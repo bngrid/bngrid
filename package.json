@@ -3,10 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack --port 3333",
+    "key": "tsx ./utils/secret-key.ts",
+    "dev": "next dev --turbopack",
+    "lint": "next lint",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "start": "next start -p 8080"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
@@ -33,6 +34,8 @@
     "prettier": "^3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.11",
     "tailwindcss": "^4",
+    "tailwindcss-animate": "^1.0.7",
+    "tsx": "^4.19.3",
     "typescript": "^5"
   }
 }
