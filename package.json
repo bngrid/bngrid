@@ -4,18 +4,25 @@
   "private": true,
   "scripts": {
     "key": "tsx ./utils/secret-key.ts",
+    "generate": "prisma generate",
+    "seed": "prisma db seed",
+    "init": "pnpm key && pnpm generate && pnpm seed",
     "dev": "next dev --turbopack",
     "lint": "next lint",
     "build": "next build",
-    "start": "next start -p 8080"
+    "start": "next start -p 8080",
+    "prod": "next lint && pnpm build && pnpm start"
   },
   "dependencies": {
+    "@prisma/client": "^6.5.0",
     "bcryptjs": "^3.0.2",
     "clsx": "^2.1.1",
+    "cos-nodejs-sdk-v5": "^2.14.7",
     "date-fns": "^4.1.0",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.487.0",
     "next": "15.2.4",
+    "nodemailer": "^6.10.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "swr": "^2.3.3",
@@ -27,15 +34,20 @@
     "@tailwindcss/postcss": "^4",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^20",
+    "@types/nodemailer": "^6.4.17",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.2.4",
     "prettier": "^3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.11",
+    "prisma": "^6.5.0",
     "tailwindcss": "^4",
     "tailwindcss-animate": "^1.0.7",
     "tsx": "^4.19.3",
     "typescript": "^5"
+  },
+  "prisma": {
+    "seed": "tsx ./prisma/seed.ts"
   }
 }

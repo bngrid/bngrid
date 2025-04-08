@@ -9,10 +9,10 @@ const cookieStore = {
     if (!key || /^(?:expires|max\-age|path|domain|secure)$/i.test(key)) {
       throw new Error('名称无效')
     }
-    document.cookie = `${encodeURIComponent(key)}=${encodeURIComponent(value)}; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/`
+    document.cookie = `${encodeURIComponent(key)}=${encodeURIComponent(value)}; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/; secure; samesite=strict`
   },
   removeItem: (key: string) => {
-    document.cookie = `${encodeURIComponent(key)}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`
+    document.cookie = `${encodeURIComponent(key)}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; secure; samesite=strict`
   }
 }
 

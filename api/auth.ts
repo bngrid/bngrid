@@ -11,7 +11,6 @@ const user = {
   coin: 100,
   status: 'active',
   token: '123456',
-  avatar: 'https://avatars.githubusercontent.com/u/146823537',
   role: 'admin',
   create: '2025-01-15 15:17:36.641',
   update: '2025-01-15 15:17:36.641'

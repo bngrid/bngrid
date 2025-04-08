@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  username String   @unique
+  password String
+  email    String   @unique
+  avatar   String   @default("")
+  coin     Int      @default(0)
+  token    String
+  status   Status   @default(pending)
+  role     Role     @default(basic)
+  create   DateTime @default(now())
+  updata   DateTime @updatedAt
+
+  @@map("user")
+}
+
+enum Status {
+  pending
+  active
+  locked
+  banned
+  deleted
+}
+
+enum Role {
+  basic
+  admin
+  super
+}
