@@ -1,21 +1,23 @@
 'use server'
 
-import { Data, Token } from '@/types/server'
+import { Token } from '@/types/server'
 import { User } from '@/types/user'
+import { data } from '@/utils/data'
 import db from '@/utils/db'
 import generateToken from '@/utils/token'
+import { da } from 'date-fns/locale'
 import { sign, verify } from 'jsonwebtoken'
 import { cookies } from 'next/headers'
 
-export async function signAccess(userid: string, token: string): Data<string> {
+export async function signAccess(userid: string, token: string) {
   const publicKey = process.env.JWT_PUBLIC_KEY
   if (!publicKey) {
     throw new Error('未找到 JWT_PUBLIC_KEY 环境变量')
   }
   try {
-    return {
-      success: true,
-      result: sign(
+    return data(
+      true,
+      sign(
         {
           userid,
           token,
@@ -27,24 +29,21 @@ export async function signAccess(userid: string, token: string): Data<string> {
           expiresIn: '30m'
         }
       )
-    }
+    )
   } catch {
-    return {
-      success: false,
-      result: 'TOKEN 生成失败'
-    }
+    return data(false, 'TOKEN 生成失败')
   }
 }
 
-export async function signRefresh(userid: string, token: string): Data<string> {
+export async function signRefresh(userid: string, token: string) {
   const publicKey = process.env.JWT_PUBLIC_KEY
   if (!publicKey) {
     throw new Error('未找到 JWT_PUBLIC_KEY 环境变量')
   }
   try {
-    return {
-      success: true,
-      result: sign(
+    return data(
+      true,
+      sign(
         {
           userid,
           token,
@@ -56,16 +55,13 @@ export async function signRefresh(userid: string, token: string): Data<string> {
           expiresIn: '30d'
         }
       )
-    }
+    )
   } catch {
-    return {
-      success: false,
-      result: 'TOKEN 生成失败'
-    }
+    return data(false, 'TOKEN 生成失败')
   }
 }
 
-export async function verifyAccess(jwt: string): Data<string> {
+export async function verifyAccess(jwt: string) {
   const privateKey = process.env.JWT_PRIVATE_KEY
   if (!privateKey) {
     throw new Error('未找到 JWT_PRIVATE_KEY 环境变量')
@@ -75,10 +71,7 @@ export async function verifyAccess(jwt: string): Data<string> {
       issuer: 'banno'
     }) as Token
     if (result.type !== 'access') {
-      return {
-        success: false,
-        result: 'TOKEN 类型错误'
-      }
+      return data(false, 'TOKEN 类型错误')
     }
     const user = await db.user.findUnique({
       where: {
@@ -86,27 +79,18 @@ export async function verifyAccess(jwt: string): Data<string> {
       }
     })
     if (!user) {
-      return { success: false, result: '用户不存在' }
+      return data(false, '用户不存在')
     }
     if (result.token !== user.token) {
-      return {
-        success: false,
-        result: 'TOKEN 令牌错误'
-      }
+      return data(false, 'TOKEN 令牌错误')
     }
-    return {
-      success: true,
-      result: result.userid
-    }
+    return data(true, result.userid)
   } catch {
-    return {
-      success: false,
-      result: 'TOKEN 解析失败'
-    }
+    return data(false, 'TOKEN 解析失败')
   }
 }
 
-export async function verifyRefresh(jwt: string): Data<User> {
+export async function verifyRefresh(jwt: string) {
   const privateKey = process.env.JWT_PRIVATE_KEY
   if (!privateKey) {
     throw new Error('未找到 JWT_PRIVATE_KEY 环境变量')
@@ -116,10 +100,7 @@ export async function verifyRefresh(jwt: string): Data<User> {
       issuer: 'banno'
     }) as Token
     if (result.type !== 'access') {
-      return {
-        success: false,
-        result: 'TOKEN 类型错误'
-      }
+      return data(false, 'TOKEN 类型错误')
     }
     const user = await db.user.findUnique({
       where: {
@@ -127,13 +108,10 @@ export async function verifyRefresh(jwt: string): Data<User> {
       }
     })
     if (!user) {
-      return { success: false, result: '用户不存在' }
+      return data(false, '用户不存在')
     }
     if (result.token !== user.token) {
-      return {
-        success: false,
-        result: 'TOKEN 令牌错误'
-      }
+      return data(false, 'TOKEN 令牌错误')
     }
     const newToken = generateToken()
     const newUser = await db.user.update({
@@ -144,25 +122,19 @@ export async function verifyRefresh(jwt: string): Data<User> {
         token: newToken
       }
     })
-    return {
-      success: true,
-      result: newUser
-    }
+    return data(true, newUser)
   } catch {
-    return {
-      success: false,
-      result: 'TOKEN 解析失败'
-    }
+    return data(false, 'TOKEN 解析失败')
   }
 }
 
-export default async function setJwt({ id, token }: User): Data<string> {
+export default async function setJwt({ id, token }: User) {
   const { 0: accessToken, 1: refreshToken } = await Promise.all([
     signAccess(id, token),
     signRefresh(id, token)
   ])
   if (!accessToken.success || !refreshToken.success) {
-    return { success: false, result: 'TOKEN 生成失败' }
+    return data(false, 'TOKEN 生成失败')
   }
   const cookieStore = await cookies()
   const cookieOptions = { httpOnly: true, secure: true, sameSite: true }
@@ -174,5 +146,5 @@ export default async function setJwt({ id, token }: User): Data<string> {
     ...cookieOptions,
     maxAge: 30 * 24 * 60 * 60
   })
-  return { success: true, result: '登录成功' }
+  return data(true, '登录成功')
 }

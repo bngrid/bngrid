@@ -1,6 +1,6 @@
 'use server'
 
-import { Data } from '@/types/server'
+import { data } from '@/utils/data'
 import COS from 'cos-nodejs-sdk-v5'
 
 type ReasonType = 'icons' | 'wallpapers' | 'avatars'
@@ -28,37 +28,25 @@ export async function uploadImage(
   name: string,
   file: File,
   onProgress?: (percent: number) => void
-): Data<string> {
+) {
   try {
-    const data = await cos.putObject({
+    const res = await cos.putObject({
       ...generateObject(reason, name),
       Body: Buffer.from(await file.arrayBuffer()),
       ContentLength: file.size,
       onProgress: progress => onProgress?.(progress.percent)
     })
-    return {
-      success: true,
-      result: data.Location
-    }
+    return data(true, res.Location)
   } catch {
-    return {
-      success: false,
-      result: '图片上传失败'
-    }
+    return data(false, '图片上传失败')
   }
 }
 
-export async function downloadImage(reason: ReasonType, name: string): Data<string> {
+export async function downloadImage(reason: ReasonType, name: string) {
   try {
-    const data = await cos.getObject(generateObject(reason, name))
-    return {
-      success: true,
-      result: `data:image/bmp;base64,${data.Body.toString('base64')}`
-    }
+    const res = await cos.getObject(generateObject(reason, name))
+    return data(true, `data:image/bmp;base64,${res.Body.toString('base64')}`)
   } catch {
-    return {
-      success: false,
-      result: '图片下载失败'
-    }
+    return data(false, '图片下载失败')
   }
 }

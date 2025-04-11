@@ -4,7 +4,7 @@ export type Token = {
   type: 'access' | 'refresh'
 }
 
-export type Data<T> = Promise<
+export type Data<T> =
   | {
       success: false
       result: string
@@ -13,4 +13,3 @@ export type Data<T> = Promise<
       success: true
       result: T
     }
->
