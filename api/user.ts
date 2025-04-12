@@ -2,7 +2,7 @@
 
 import { data } from '@/lib/data'
 import { verifyEmail } from '@/lib/email'
-import setJwt from '@/lib/jwt'
+import { checkJWT, clearJWT, setJWT } from '@/lib/jwt'
 import { LoginByPassword, LoginByToken } from '@/schemas/user'
 import db from '@/utils/db'
 import bcrypt from 'bcryptjs'
@@ -12,15 +12,19 @@ export async function loginByPassword(username: string, password: string) {
   if (!success) {
     return data(success, error.errors.map(err => err.message).join('，'))
   }
-  const user = await db.user.findUnique({
-    where: {
-      username
+  try {
+    const user = await db.user.findUnique({
+      where: {
+        username
+      }
+    })
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      return data(false, '用户名或密码错误')
     }
-  })
-  if (!user || !(await bcrypt.compare(password, user.password))) {
-    return data(false, '用户名或密码错误')
+    return setJWT(user)
+  } catch {
+    return data(false, '数据库错误')
   }
-  return setJwt(user)
 }
 
 export async function loginByToken(email: string, token: string) {
@@ -28,17 +32,31 @@ export async function loginByToken(email: string, token: string) {
   if (!success) {
     return data(success, error.errors.map(err => err.message).join('，'))
   }
-  const user = await db.user.findUnique({
-    where: {
-      email
+  try {
+    const user = await db.user.findUnique({
+      where: {
+        email
+      }
+    })
+    if (!user) {
+      return data(false, '用户不存在')
     }
-  })
-  if (!user) {
-    return data(false, '用户不存在')
+    const verify = await verifyEmail(user, 'login', token)
+    if (!verify.success) {
+      return verify
+    }
+    return setJWT(user)
+  } catch {
+    return data(false, '数据库错误')
   }
-  const verify = await verifyEmail(user, 'login', token)
-  if (!verify.success) {
-    return verify
+}
+
+export async function register() {}
+
+export async function logout() {
+  const check = await checkJWT()
+  if (!check.success) {
+    return check
   }
-  return setJwt(user)
+  return clearJWT(check.result)
 }

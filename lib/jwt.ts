@@ -65,10 +65,15 @@ export async function signRefreshJWT(userid: string, token: string) {
   }
 }
 
-export async function verifyAccessJWT(jwt: string) {
+export async function verifyAccessJWT() {
   const privateKey = process.env.JWT_PRIVATE_KEY
   if (!privateKey) {
     throw new Error('未找到 JWT_PRIVATE_KEY 环境变量')
+  }
+  const cookieStore = await cookies()
+  const jwt = cookieStore.get('access')?.value
+  if (!jwt) {
+    return data(false, 'TOKEN 不存在')
   }
   try {
     const result = verify(jwt, privateKey, {
@@ -94,10 +99,15 @@ export async function verifyAccessJWT(jwt: string) {
   }
 }
 
-export async function verifyRefreshJWT(jwt: string) {
+export async function verifyRefreshJWT() {
   const privateKey = process.env.JWT_PRIVATE_KEY
   if (!privateKey) {
     throw new Error('未找到 JWT_PRIVATE_KEY 环境变量')
+  }
+  const cookieStore = await cookies()
+  const jwt = cookieStore.get('refresh')?.value
+  if (!jwt) {
+    return data(false, 'TOKEN 不存在')
   }
   try {
     const result = verify(jwt, privateKey, {
@@ -117,22 +127,13 @@ export async function verifyRefreshJWT(jwt: string) {
     if (result.token !== user.token) {
       return data(false, 'TOKEN 令牌错误')
     }
-    const newToken = generateRandomString()
-    const newUser = await db.user.update({
-      where: {
-        id: result.userid
-      },
-      data: {
-        token: newToken
-      }
-    })
-    return data(true, newUser)
+    return data(true, user)
   } catch {
     return data(false, 'TOKEN 解析失败')
   }
 }
 
-export default async function setJwt({ id, token }: User) {
+export async function setJWT({ id, token }: User) {
   const { 0: accessToken, 1: refreshToken } = await Promise.all([
     signAccessJWT(id, token),
     signRefreshJWT(id, token)
@@ -151,4 +152,55 @@ export default async function setJwt({ id, token }: User) {
     maxAge: 30 * 24 * 60 * 60
   })
   return data(true, '登录成功')
+}
+
+export async function clearJWT(userid: string) {
+  const cookieStore = await cookies()
+  cookieStore.delete('access')
+  cookieStore.delete('refresh')
+  try {
+    await db.user.update({
+      where: {
+        id: userid
+      },
+      data: {
+        token: generateRandomString()
+      }
+    })
+    return data(true, '登出成功')
+  } catch {
+    return data(false, '数据库错误')
+  }
+}
+
+export async function checkJWT() {
+  let accessToken = await verifyAccessJWT()
+  if (accessToken.success) {
+    return accessToken
+  }
+  const refreshResult = await verifyRefreshJWT()
+  const cookieStore = await cookies()
+  if (!refreshResult.success) {
+    return clearJWT(refreshResult.result)
+  }
+  const { id, token } = refreshResult.result
+  accessToken = await signAccessJWT(id, token)
+  if (!accessToken.success) {
+    cookieStore.delete('access')
+    cookieStore.delete('refresh')
+    return data(false, '登录已过期')
+  }
+  cookieStore.set('access', accessToken.result, {
+    httpOnly: true,
+    secure: true,
+    sameSite: true,
+    maxAge: 30 * 60
+  })
+  accessToken = await verifyAccessJWT()
+  if (!accessToken.success) {
+    cookieStore.delete('access')
+    cookieStore.delete('refresh')
+    return data(false, '登录已过期')
+  }
+  return accessToken
 }
