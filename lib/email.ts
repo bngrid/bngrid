@@ -5,12 +5,9 @@ import { data } from '@/lib/data'
 import generateRandomString from '@/utils/random-string'
 import { createTransport } from 'nodemailer'
 
-type ReasonType = 'verify' | 'login' | 'modify'
+type Reason = 'verify' | 'login' | 'modify'
 
-const tokenManager = new Map<
-  string,
-  { reason: ReasonType; token: string; time: number }
->()
+const tokenManager = new Map<string, { reason: Reason; token: string; time: number }>()
 const reasons = {
   verify: '我们即将创建您的 BNGRID 账户，请在您的验证码核销页面',
   login: '您正在尝试通过邮箱登录，请在您的验证码登录页面',
@@ -30,7 +27,7 @@ const transporter = createTransport({
   }
 })
 
-export async function signEmail({ id, username, email }: User, reason: ReasonType) {
+export async function signEmail({ id, username, email }: User, reason: Reason) {
   if (tokenManager.has(id)) {
     const info = tokenManager.get(id)!
     if (Date.now() - info.time < 60 * 1000) {
@@ -68,12 +65,13 @@ export async function signEmail({ id, username, email }: User, reason: ReasonTyp
   return data(true, '邮件发送成功')
 }
 
-export async function verifyEmail({ id }: User, reason: ReasonType, token: string) {
+export async function verifyEmail({ id }: User, reason: Reason, token: string) {
   const info = tokenManager.get(id)
   if (!info || info.reason !== reason || info.token !== token) {
     return data(false, '验证码校验失败')
   }
   if (Date.now() - info.time > 6 * 60 * 1000) {
+    tokenManager.delete(id)
     return data(false, '验证码已过期')
   }
   tokenManager.delete(id)

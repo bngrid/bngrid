@@ -1,6 +1,17 @@
 import { useEffect, useRef } from 'react'
 
 const pointerManager = new Map()
+function bubble(element: HTMLDivElement, event: PointerEvent) {
+  element.onpointercancel?.(event)
+  let parent = element.parentElement
+  while (parent) {
+    if (parent.onpointerdown) {
+      parent.onpointerdown(event)
+      break
+    }
+    parent = parent.parentElement
+  }
+}
 
 const usePointer = (
   id: string,
@@ -21,24 +32,11 @@ const usePointer = (
       throw new Error('指针元素不存在')
     }
     element.style.pointerEvents = 'auto'
-    const { down, move, up } = handler(data.current, bubble)
-    function bubble(event: PointerEvent) {
-      if (element) {
-        element.onpointercancel?.(event)
-        let parent = element.parentElement
-        while (parent) {
-          if (parent.onpointerdown) {
-            parent.onpointerdown(event)
-            break
-          }
-          parent = parent.parentElement
-        }
-      }
-    }
+    const { down, move, up } = handler(data.current, event => bubble(element, event))
     element.onpointerdown = event => {
       event.stopPropagation()
       if (pointerManager.has(id)) {
-        return bubble(event)
+        return bubble(element, event)
       }
       element.setPointerCapture(event.pointerId)
       pointerManager.set(id, event.pointerId)

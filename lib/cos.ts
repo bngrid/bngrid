@@ -14,7 +14,6 @@ const cos = new COS({
   SecretId,
   SecretKey
 })
-
 function generateObject(reason: ReasonType, name: string) {
   return {
     Bucket: 'bngrid-1316584904',

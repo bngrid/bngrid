@@ -13,7 +13,7 @@ type Token = {
   type: 'access' | 'refresh'
 }
 
-export async function signAccess(userid: string, token: string) {
+export async function signAccessJWT(userid: string, token: string) {
   const publicKey = process.env.JWT_PUBLIC_KEY
   if (!publicKey) {
     throw new Error('未找到 JWT_PUBLIC_KEY 环境变量')
@@ -39,7 +39,7 @@ export async function signAccess(userid: string, token: string) {
   }
 }
 
-export async function signRefresh(userid: string, token: string) {
+export async function signRefreshJWT(userid: string, token: string) {
   const publicKey = process.env.JWT_PUBLIC_KEY
   if (!publicKey) {
     throw new Error('未找到 JWT_PUBLIC_KEY 环境变量')
@@ -65,7 +65,7 @@ export async function signRefresh(userid: string, token: string) {
   }
 }
 
-export async function verifyAccess(jwt: string) {
+export async function verifyAccessJWT(jwt: string) {
   const privateKey = process.env.JWT_PRIVATE_KEY
   if (!privateKey) {
     throw new Error('未找到 JWT_PRIVATE_KEY 环境变量')
@@ -94,7 +94,7 @@ export async function verifyAccess(jwt: string) {
   }
 }
 
-export async function verifyRefresh(jwt: string) {
+export async function verifyRefreshJWT(jwt: string) {
   const privateKey = process.env.JWT_PRIVATE_KEY
   if (!privateKey) {
     throw new Error('未找到 JWT_PRIVATE_KEY 环境变量')
@@ -134,8 +134,8 @@ export async function verifyRefresh(jwt: string) {
 
 export default async function setJwt({ id, token }: User) {
   const { 0: accessToken, 1: refreshToken } = await Promise.all([
-    signAccess(id, token),
-    signRefresh(id, token)
+    signAccessJWT(id, token),
+    signRefreshJWT(id, token)
   ])
   if (!accessToken.success || !refreshToken.success) {
     return data(false, 'TOKEN 生成失败')

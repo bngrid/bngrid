@@ -13,7 +13,7 @@ type ParamActions = {
 
 export type ParamStore = ParamState & ParamActions
 
-function calcParam(width: number, height: number) {
+function computeParam(width: number, height: number) {
   const ratio = width / height
   let size = 60
   let column = 1
@@ -43,6 +43,6 @@ const defaultInitState: ParamState = {
 export const createParamStore = (initState: ParamState = defaultInitState) => {
   return createStore<ParamStore>()(set => ({
     ...initState,
-    setParam: (width, height) => set(calcParam(width, height))
+    setParam: (width, height) => set(computeParam(width, height))
   }))
 }

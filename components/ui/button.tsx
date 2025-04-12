@@ -1,15 +1,15 @@
 import usePointer from '@/hooks/pointer'
 import useValue from '@/hooks/value'
+import wrapHandler from '@/utils/wrap-handler'
 import clsx from 'clsx'
 import { LoaderCircle } from 'lucide-react'
-import { ReactNode } from 'react'
+import { ReactNode, useState } from 'react'
 
 const Button = ({
   children,
   className,
   icon,
   disabled,
-  loading,
   onTap,
   onPress
 }: {
@@ -17,7 +17,6 @@ const Button = ({
   className?: string
   icon?: ReactNode
   disabled?: boolean
-  loading?: boolean
   onTap?: (event: PointerEvent) => void
   onPress?: (event: PointerEvent) => void
 }) => {
@@ -32,11 +31,12 @@ const Button = ({
     left: 0,
     top: 0
   })
+  const { 0: loading, 1: setLoading } = useState(false)
   const buttonRef = usePointer('button', (data, bubble) => ({
     down: (event, element) => {
       if (disabled || loading) {
         data.timer = undefined
-        bubble(event)
+        return bubble(event)
       }
       data.initial = {
         x: event.clientX,
@@ -82,12 +82,12 @@ const Button = ({
         return
       }
       data.timer = clearTimeout(data.timer)
-      bubble(event)
+      return bubble(event)
     },
-    up: event => {
+    up: async event => {
       clearTimeout(data.timer)
-      if (data.timer) {
-        onTap?.(event)
+      if (data.timer && onTap) {
+        wrapHandler(() => onTap(event), setLoading)
       }
       anime({
         target: value => ({

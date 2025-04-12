@@ -113,36 +113,6 @@ pnpm start
 - 普通变量和函数统一使用驼峰命名（camelCase）。
 - 函数名以动词开头，名词结尾。
 
-### 函数动词
-
-- `get`：获取
-- `read`：读取
-- `fetch`：拉取
-- `find`：查询
-
-- `set`：设置
-- `reset`：重置
-- `update`：更新
-- `modify`：修改
-
-- `create`：创建
-- `generate`：生成
-- `init`：初始化
-
-- `delete`：删除
-- `remove`：移除
-
-- `execute`：执行
-- `handle`：处理
-- `compute`：计算
-
-- `convert`：转换
-- `parse`：解析
-- `format`：格式化
-
-- `validate`：校验
-- `check`：检查
-
 ## 致谢
 
 感谢以下开源项目对 BNGRID 的支持（排名不分先后）：
