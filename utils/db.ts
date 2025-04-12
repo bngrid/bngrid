@@ -1,13 +1,11 @@
 import { PrismaClient } from '@/generated/prisma'
 
-type GlobalType = typeof globalThis & {
+type Global = typeof globalThis & {
   prisma?: PrismaClient
 }
 
-const globalWithPrisma = <GlobalType>global
-
+const globalWithPrisma = <Global>global
 const db = globalWithPrisma.prisma ?? new PrismaClient()
-
 if (process.env.NODE_ENV !== 'production') {
   globalWithPrisma.prisma = db
 }

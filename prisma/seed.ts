@@ -1,5 +1,5 @@
 import { PrismaClient } from '@/generated/prisma'
-import generateToken from '@/utils/token'
+import generateRandomString from '@/utils/random-string'
 import { genSaltSync, hashSync } from 'bcryptjs'
 
 const prisma = new PrismaClient()
@@ -20,7 +20,7 @@ async function main() {
       username: 'bngrid',
       password: hashSync(password, salt),
       email: 'bngrid@outlook.com',
-      token: generateToken(),
+      token: generateRandomString(),
       status: 'active',
       role: 'super'
     }

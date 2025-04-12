@@ -1,7 +1,6 @@
 import { z } from 'zod'
 
 const specialRegex = /^[\w!@#$%^&*()+\-=[\]{};:',.?/]+$/
-
 const Username = z
   .string()
   .trim()
@@ -12,7 +11,6 @@ const Username = z
     specialRegex,
     "用户名仅允许使用字母、数字及以下特殊字符：!@#$%^&*()_+-=[]{};:',.?/"
   )
-
 const Password = z
   .string()
   .trim()
@@ -38,7 +36,6 @@ export const LoginByPassword = z.object({
 })
 
 const Email = z.string().trim().nonempty('邮箱不能为空').email('邮箱格式不正确')
-
 const Token = z
   .string()
   .trim()

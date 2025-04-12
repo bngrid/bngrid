@@ -1,9 +1,8 @@
 'use server'
 
-import { User } from '@/types/user'
-import { data } from '@/utils/data'
-import generateToken from '@/utils/token'
-import { da } from 'date-fns/locale'
+import { User } from '@/generated/prisma'
+import { data } from '@/lib/data'
+import generateRandomString from '@/utils/random-string'
 import { createTransport } from 'nodemailer'
 
 type ReasonType = 'verify' | 'login' | 'modify'
@@ -19,7 +18,7 @@ const reasons = {
 }
 const { EMAIL_USER: emailUser, EMAIL_PASS: emailPass } = process.env
 if (!emailUser || !emailPass) {
-  throw new Error('未发现 EMAIL_USER 和 EMAIL_PASS 环境变量')
+  throw new Error('未找到 EMAIL_USER 和 EMAIL_PASS 环境变量')
 }
 const transporter = createTransport({
   host: 'smtp.exmail.qq.com',
@@ -39,7 +38,7 @@ export async function signEmail({ id, username, email }: User, reason: ReasonTyp
     }
     tokenManager.delete(id)
   }
-  const token = generateToken()
+  const token = generateRandomString()
   const mailOptions = {
     from: 'banno@bngrid.com',
     to: email,

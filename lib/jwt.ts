@@ -1,13 +1,17 @@
 'use server'
 
-import { Token } from '@/types/server'
-import { User } from '@/types/user'
-import { data } from '@/utils/data'
+import { User } from '@/generated/prisma'
+import { data } from '@/lib/data'
 import db from '@/utils/db'
-import generateToken from '@/utils/token'
-import { da } from 'date-fns/locale'
+import generateRandomString from '@/utils/random-string'
 import { sign, verify } from 'jsonwebtoken'
 import { cookies } from 'next/headers'
+
+type Token = {
+  userid: string
+  token: string
+  type: 'access' | 'refresh'
+}
 
 export async function signAccess(userid: string, token: string) {
   const publicKey = process.env.JWT_PUBLIC_KEY
@@ -113,7 +117,7 @@ export async function verifyRefresh(jwt: string) {
     if (result.token !== user.token) {
       return data(false, 'TOKEN 令牌错误')
     }
-    const newToken = generateToken()
+    const newToken = generateRandomString()
     const newUser = await db.user.update({
       where: {
         id: result.userid

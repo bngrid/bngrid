@@ -1,4 +1,4 @@
-export default function generateToken(length = 6) {
+export default function generateRandomString(length = 6) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
   return Array.from(
     { length },

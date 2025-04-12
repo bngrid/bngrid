@@ -15,9 +15,9 @@ model User {
   email    String   @unique
   avatar   String   @default("")
   coin     Int      @default(0)
-  token    String
   status   Status   @default(pending)
   role     Role     @default(basic)
+  token    String
   create   DateTime @default(now())
   updata   DateTime @updatedAt
 

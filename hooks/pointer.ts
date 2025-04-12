@@ -15,7 +15,6 @@ const usePointer = (
 ) => {
   const ref = useRef<HTMLDivElement>(null)
   const data = useRef<Record<string, any>>({})
-
   useEffect(() => {
     const element = ref.current
     if (!element) {
@@ -23,7 +22,6 @@ const usePointer = (
     }
     element.style.pointerEvents = 'auto'
     const { down, move, up } = handler(data.current, bubble)
-
     function bubble(event: PointerEvent) {
       if (element) {
         element.onpointercancel?.(event)
@@ -37,7 +35,6 @@ const usePointer = (
         }
       }
     }
-
     element.onpointerdown = event => {
       event.stopPropagation()
       if (pointerManager.has(id)) {
@@ -47,13 +44,11 @@ const usePointer = (
       pointerManager.set(id, event.pointerId)
       down(event, element)
     }
-
     element.onpointermove = event => {
       if (pointerManager.get(id) === event.pointerId) {
         move(event, element)
       }
     }
-
     element.onpointerup = element.onpointercancel = event => {
       if (pointerManager.get(id) === event.pointerId) {
         element.releasePointerCapture(event.pointerId)
@@ -61,7 +56,6 @@ const usePointer = (
         up(event, element)
       }
     }
-
     return () => {
       element.onpointerdown =
         element.onpointermove =

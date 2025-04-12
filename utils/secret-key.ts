@@ -1,7 +1,7 @@
 import { generateKeyPairSync } from 'crypto'
 import { existsSync, readFileSync, writeFileSync } from 'fs'
 
-function secretKey() {
+function generateSecretKey() {
   const { publicKey, privateKey } = generateKeyPairSync('rsa', {
     modulusLength: 2048,
     publicKeyEncoding: { type: 'spki', format: 'pem' },
@@ -27,8 +27,8 @@ function secretKey() {
 }
 
 try {
-  secretKey()
+  generateSecretKey()
   console.log('密钥生成成功')
 } catch (error) {
-  console.error('发生异常：', error)
+  console.error('密钥生成失败：', error)
 }

@@ -1,4 +1,12 @@
-import { Data } from '@/types/server'
+type Data<T> =
+  | {
+      success: false
+      result: string
+    }
+  | {
+      success: true
+      result: T
+    }
 
 export function data<T>(success: true, result: T): Data<T>
 

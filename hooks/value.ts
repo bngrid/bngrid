@@ -27,18 +27,15 @@ const useValue = <Value extends object>(initial: Value) => {
   const { 0: value, 1: setValue } = useState(initial)
   const current = useRef(initial)
   const animeId = useRef(0)
-
   function stop() {
     cancelAnimationFrame(animeId.current)
     animeId.current = 0
   }
-
   function update(newValue: (value: Value) => Value) {
     stop()
     current.current = newValue(current.current)
     setValue(newValue(current.current))
   }
-
   function anime({
     target,
     duration = 300,
@@ -55,7 +52,6 @@ const useValue = <Value extends object>(initial: Value) => {
     stop()
     const initial = current.current
     const start = Date.now()
-
     function run() {
       const progress = Math.min((Date.now() - start) / duration, 1)
       const result = <Value>Object.fromEntries(
@@ -79,10 +75,8 @@ const useValue = <Value extends object>(initial: Value) => {
         onComplete?.()
       }
     }
-
     run()
   }
-
   return {
     value,
     update,

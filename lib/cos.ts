@@ -1,6 +1,6 @@
 'use server'
 
-import { data } from '@/utils/data'
+import { data } from '@/lib/data'
 import COS from 'cos-nodejs-sdk-v5'
 
 type ReasonType = 'icons' | 'wallpapers' | 'avatars'

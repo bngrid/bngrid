@@ -1,9 +1,9 @@
 'use server'
 
+import { data } from '@/lib/data'
 import { verifyEmail } from '@/lib/email'
 import setJwt from '@/lib/jwt'
 import { LoginByPassword, LoginByToken } from '@/schemas/user'
-import { data } from '@/utils/data'
 import db from '@/utils/db'
 import bcrypt from 'bcryptjs'
 
