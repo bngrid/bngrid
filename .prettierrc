@@ -5,5 +5,5 @@
   "trailingComma": "none",
   "arrowParens": "avoid",
   "plugins": ["prettier-plugin-tailwindcss"],
-  "tailwindFunctions": ["clsx"]
+  "tailwindFunctions": ["cx"]
 }

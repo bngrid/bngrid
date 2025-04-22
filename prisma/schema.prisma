@@ -4,22 +4,20 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id       String   @id @default(auto()) @map("_id") @db.ObjectId
-  username String   @unique
-  password String
-  email    String   @unique
-  avatar   String   @default("")
+  id       Int      @id @default(autoincrement())
+  username String   @unique @db.VarChar(16)
+  password String   @db.VarChar(60)
+  email    String   @unique @db.VarChar(60)
   coin     Int      @default(0)
   status   Status   @default(pending)
   role     Role     @default(basic)
-  token    String
   create   DateTime @default(now())
-  updata   DateTime @updatedAt
+  update   DateTime @updatedAt
 
   @@map("user")
 }
@@ -27,7 +25,6 @@ model User {
 enum Status {
   pending
   active
-  locked
   banned
   deleted
 }

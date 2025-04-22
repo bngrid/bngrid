@@ -2,10 +2,10 @@ import { generateKeyPairSync } from 'crypto'
 import { existsSync, readFileSync, writeFileSync } from 'fs'
 
 function generateSecretKey() {
-  const { publicKey, privateKey } = generateKeyPairSync('rsa', {
+  const { privateKey, publicKey } = generateKeyPairSync('rsa', {
     modulusLength: 2048,
-    publicKeyEncoding: { type: 'spki', format: 'pem' },
-    privateKeyEncoding: { type: 'pkcs8', format: 'pem' }
+    privateKeyEncoding: { format: 'pem', type: 'pkcs8' },
+    publicKeyEncoding: { format: 'pem', type: 'spki' }
   })
   const escapedPublicKey = publicKey.replace(/\n/g, '\\n')
   const escapedPrivateKey = privateKey.replace(/\n/g, '\\n')

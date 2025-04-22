@@ -108,12 +108,13 @@
 
 * {
   pointer-events: none;
+  line-height: 1.2em;
   transition:
     background-color 300ms ease-in-out,
     color 300ms ease-in-out;
 }
 
 .lucide {
-  width: 1.2rem;
-  height: 1.2rem;
+  width: 1.2em;
+  height: 1.2em;
 }

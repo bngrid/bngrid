@@ -1,7 +1,5 @@
-export default function generateRandomString(length = 6) {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-  return Array.from(
-    { length },
-    () => characters[Math.floor(Math.random() * characters.length)]
-  ).join('')
+export default function generateRandomCode(length = 6) {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+  const max = chars.length
+  return Array.from({ length }, () => chars[Math.floor(Math.random() * max)]).join('')
 }

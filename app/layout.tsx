@@ -1,8 +1,10 @@
 import '@/assets/globals.css'
+
+import type { Metadata, Viewport } from 'next'
+
 import Setup from '@/components/setup'
 import Providers from '@/providers'
-import clsx from 'clsx'
-import type { Metadata, Viewport } from 'next'
+import cx from '@/utils/cx'
 import localFont from 'next/font/local'
 import { ReactNode } from 'react'
 
@@ -12,42 +14,42 @@ const font = localFont({
 })
 
 export const metadata: Metadata = {
-  title: 'BNGRID',
-  description:
-    'Huarong Grid & Atomic Widgets & Smooth Animation, Your modern browser launcher.',
-  applicationName: 'BNGRID',
-  authors: { name: 'Banno', url: 'https://bngrid.com/banno' },
-  generator: 'Next.js',
-  referrer: 'origin-when-cross-origin',
-  robots: { index: false, follow: false },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent'
   },
+  applicationName: 'BNGRID',
+  authors: { name: 'Banno', url: 'https://bngrid.com/banno' },
+  description:
+    'Huarong Grid & Atomic Widgets & Smooth Animation, Your modern browser launcher.',
   formatDetection: {
-    telephone: false,
-    date: false,
     address: false,
+    date: false,
     email: false,
+    telephone: false,
     url: false
-  }
+  },
+  generator: 'Next.js',
+  referrer: 'origin-when-cross-origin',
+  robots: { follow: false, index: false },
+  title: 'BNGRID'
 }
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#FFFFFF' },
-    { media: '(prefers-color-scheme: dark)', color: '#1E1E1E' }
-  ],
+  colorScheme: 'dark light',
   interactiveWidget: 'overlays-content',
-  colorScheme: 'dark light'
+  themeColor: [
+    { color: '#FFFFFF', media: '(prefers-color-scheme: light)' },
+    { color: '#1E1E1E', media: '(prefers-color-scheme: dark)' }
+  ]
 }
 
 const RootLayout = ({ children }: { children: ReactNode }) => {
   return (
-    <html lang="zh-CN" className="dark h-full">
+    <html className="dark h-full" lang="zh-CN">
       <body
-        className={clsx(
-          'font-family bg-background text-foreground h-full touch-none leading-[1.2rem] antialiased select-none',
+        className={cx(
+          'font-family bg-background text-foreground h-full touch-none antialiased select-none',
           font.variable
         )}
       >

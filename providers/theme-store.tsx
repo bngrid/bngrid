@@ -1,12 +1,12 @@
 'use client'
 
-import { type ThemeStore, createThemeStore } from '@/stores/theme'
-import { ReactNode, createContext, useContext, useRef } from 'react'
+import { createThemeStore, type ThemeStore } from '@/stores/theme'
+import { createContext, ReactNode, useContext, useRef } from 'react'
 import { useStore } from 'zustand'
 
 type ThemeStoreApi = ReturnType<typeof createThemeStore>
 
-const ThemeStoreContext = createContext<ThemeStoreApi | null>(null)
+const ThemeStoreContext = createContext<null | ThemeStoreApi>(null)
 
 export const ThemeStoreProvider = ({ children }: { children: ReactNode }) => {
   const storeRef = useRef<ThemeStoreApi>(null)

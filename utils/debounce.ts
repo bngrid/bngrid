@@ -1,6 +1,9 @@
-export default function debounce<T extends unknown[]>(func: (...args: T) => void, wait = 300) {
+export default function debounce<Args extends unknown[]>(
+  func: (...args: Args) => void,
+  wait = 300
+) {
   let timer = 0
-  return (...args: T) => {
+  return (...args: Args) => {
     if (timer) {
       clearTimeout(timer)
     }

@@ -1,14 +1,13 @@
-type Handler = (...args: any[]) => Promise<any> | any
+type Handler<Args extends unknown[], Return> = (...args: Args) => Promise<Return> | Return
 
-export default async function wrapHandler(
-  handler: Handler | undefined,
+export default async function wrapHandler<Args extends unknown[], Return>(
+  handler: Handler<Args, Return>,
   setLoading: (loading: boolean) => void,
-  ...args: any[]
-) {
-  if (!handler) return
+  ...args: Args
+): Promise<Return> {
   setLoading(true)
   try {
-    await Promise.resolve(handler(...args))
+    return await Promise.resolve(handler(...args))
   } finally {
     setLoading(false)
   }

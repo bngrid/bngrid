@@ -6,7 +6,7 @@ import debounce from '@/utils/debounce'
 import { useEffect } from 'react'
 
 const Setup = () => {
-  const { size, setParam } = useParamStore(state => state)
+  const { setParam, size } = useParamStore(state => state)
   const { theme } = useThemeStore(state => state)
   useEffect(() => {
     document.oncontextmenu = event => event.preventDefault()

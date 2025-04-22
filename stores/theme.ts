@@ -2,15 +2,15 @@ import cookieStore from '@/utils/cookie-store'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import { createStore } from 'zustand/vanilla'
 
-type ThemeState = {
-  theme: 'light' | 'dark'
-}
+export type ThemeStore = ThemeActions & ThemeState
 
 type ThemeActions = {
   toggleTheme: () => void
 }
 
-export type ThemeStore = ThemeState & ThemeActions
+type ThemeState = {
+  theme: 'dark' | 'light'
+}
 
 const defaultInitState: ThemeState = {
   theme: 'dark'

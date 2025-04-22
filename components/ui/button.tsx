@@ -1,38 +1,38 @@
 import usePointer from '@/hooks/pointer'
 import useValue from '@/hooks/value'
+import cx from '@/utils/cx'
 import wrapHandler from '@/utils/wrap-handler'
-import clsx from 'clsx'
 import { LoaderCircle } from 'lucide-react'
 import { ReactNode, useState } from 'react'
 
 const Button = ({
   children,
   className,
-  icon,
   disabled,
-  onTap,
-  onPress
+  icon,
+  onPress,
+  onTap
 }: {
   children?: ReactNode
   className?: string
-  icon?: ReactNode
   disabled?: boolean
-  onTap?: (event: PointerEvent) => void
+  icon?: ReactNode
   onPress?: (event: PointerEvent) => void
+  onTap?: (event: PointerEvent) => void
 }) => {
   const {
-    value: style,
+    anime,
     update,
-    anime
+    value: style
   } = useValue({
+    left: 0,
+    opacity: 1,
     scale: 1,
     size: 0,
-    opacity: 1,
-    left: 0,
     top: 0
   })
   const { 0: loading, 1: setLoading } = useState(false)
-  const buttonRef = usePointer('button', (data, bubble) => ({
+  const buttonPointer = usePointer('button', (data, bubble) => ({
     down: (event, element) => {
       if (disabled || loading) {
         data.timer = undefined
@@ -50,28 +50,28 @@ const Button = ({
       }, 500)
       update(value => ({
         ...value,
-        size: 0,
-        opacity: 1,
         left: event.offsetX,
+        opacity: 1,
+        size: 0,
         top: event.offsetY
       }))
       anime({
+        onComplete: () =>
+          onPress &&
+          anime({
+            duration: 200,
+            easing: 'back',
+            target: value => ({
+              ...value,
+              opacity: 0,
+              scale: 1.05
+            })
+          }),
         target: value => ({
           ...value,
           scale: 0.95,
           size: 2 * (element.offsetWidth ** 2 + element.offsetHeight ** 2) ** 0.5
-        }),
-        onComplete: () =>
-          onPress &&
-          anime({
-            target: value => ({
-              ...value,
-              scale: 1.05,
-              opacity: 0
-            }),
-            duration: 200,
-            easing: 'back'
-          })
+        })
       })
     },
     move: event => {
@@ -92,37 +92,39 @@ const Button = ({
       anime({
         target: value => ({
           ...value,
-          scale: 1,
-          opacity: 0
+          opacity: 0,
+          scale: 1
         })
       })
     }
   }))
   return (
     <div
-      ref={buttonRef}
-      className={clsx(
-        'bg-foreground text-background relative flex cursor-pointer items-center justify-center gap-1 overflow-hidden rounded-lg',
-        children ? 'h-4 px-1.5' : 'size-4',
+      className={cx(
+        'bg-foreground text-background relative inline-flex cursor-pointer items-center justify-center gap-1 rounded-[0.675rem] py-1.5',
+        children ? 'px-2' : 'px-1.5',
         (loading || disabled) && 'opacity-60',
         className
       )}
+      ref={buttonPointer}
       style={{
         transform: `scale3d(${style.scale}, ${style.scale}, 1)`
       }}
     >
       {loading ? <LoaderCircle className="animate-spin" /> : icon}
       {children}
-      <div
-        className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full bg-current/30"
-        style={{
-          width: `${style.size}px`,
-          height: `${style.size}px`,
-          left: `${style.left}px`,
-          top: `${style.top}px`,
-          opacity: style.opacity
-        }}
-      />
+      <div className="absolute inset-0 overflow-hidden rounded-lg">
+        <div
+          className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full bg-current/30"
+          style={{
+            height: `${style.size}px`,
+            left: `${style.left}px`,
+            opacity: style.opacity,
+            top: `${style.top}px`,
+            width: `${style.size}px`
+          }}
+        />
+      </div>
     </div>
   )
 }
