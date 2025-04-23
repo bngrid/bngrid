@@ -1,22 +1,28 @@
+'use client'
+
 import usePointer from '@/hooks/pointer'
 import useValue from '@/hooks/value'
 import cx from '@/utils/cx'
-import wrapHandler from '@/utils/wrap-handler'
 import { LoaderCircle } from 'lucide-react'
-import { ReactNode, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { ReactNode } from 'react'
 
 const Button = ({
   children,
   className,
   disabled,
+  href,
   icon,
+  loading,
   onPress,
   onTap
 }: {
   children?: ReactNode
   className?: string
   disabled?: boolean
+  href?: string
   icon?: ReactNode
+  loading?: boolean
   onPress?: (event: PointerEvent) => void
   onTap?: (event: PointerEvent) => void
 }) => {
@@ -31,7 +37,7 @@ const Button = ({
     size: 0,
     top: 0
   })
-  const { 0: loading, 1: setLoading } = useState(false)
+  const router = useRouter()
   const buttonPointer = usePointer('button', (data, bubble) => ({
     down: (event, element) => {
       if (disabled || loading) {
@@ -86,8 +92,13 @@ const Button = ({
     },
     up: async event => {
       clearTimeout(data.timer)
-      if (data.timer && onTap) {
-        wrapHandler(() => onTap(event), setLoading)
+      if (data.timer) {
+        onTap?.(event)
+        if (href) {
+          router.push(
+            href.startsWith('http') ? `/redirect?to=${encodeURIComponent(href)}` : href
+          )
+        }
       }
       anime({
         target: value => ({

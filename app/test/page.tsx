@@ -18,6 +18,9 @@ function TestPage() {
         prefix={<Search />}
         value={value}
       />
+      <Button href="/" onTap={() => console.log('aaa')}>
+        跳转
+      </Button>
     </div>
   )
 }
