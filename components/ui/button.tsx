@@ -5,9 +5,9 @@ import useValue from '@/hooks/value'
 import cx from '@/utils/cx'
 import { LoaderCircle } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { ReactNode } from 'react'
+import { memo, ReactNode, useId } from 'react'
 
-const Button = ({
+const Button = memo(function Button({
   children,
   className,
   disabled,
@@ -25,7 +25,7 @@ const Button = ({
   loading?: boolean
   onPress?: (event: PointerEvent) => void
   onTap?: (event: PointerEvent) => void
-}) => {
+}) {
   const {
     anime,
     update,
@@ -38,7 +38,8 @@ const Button = ({
     top: 0
   })
   const router = useRouter()
-  const buttonPointer = usePointer('button', (data, bubble) => ({
+  const id = useId()
+  const buttonPointer = usePointer(id, (data, bubble) => ({
     down: (event, element) => {
       if (disabled || loading) {
         data.timer = undefined
@@ -112,9 +113,9 @@ const Button = ({
   return (
     <div
       className={cx(
-        'bg-foreground text-background relative inline-flex cursor-pointer items-center justify-center gap-1 rounded-[0.675rem] py-1.5',
+        'bg-foreground text-background relative inline-flex items-center justify-center gap-1 overflow-hidden rounded-[0.675rem] py-1.5',
         children ? 'px-2' : 'px-1.5',
-        (loading || disabled) && 'opacity-60',
+        disabled || loading ? 'cursor-not-allowed opacity-60' : 'cursor-pointer',
         className
       )}
       ref={buttonPointer}
@@ -124,20 +125,18 @@ const Button = ({
     >
       {loading ? <LoaderCircle className="animate-spin" /> : icon}
       {children}
-      <div className="absolute inset-0 overflow-hidden rounded-lg">
-        <div
-          className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full bg-current/30"
-          style={{
-            height: `${style.size}px`,
-            left: `${style.left}px`,
-            opacity: style.opacity,
-            top: `${style.top}px`,
-            width: `${style.size}px`
-          }}
-        />
-      </div>
+      <div
+        className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full bg-current/30"
+        style={{
+          height: `${style.size}px`,
+          left: `${style.left}px`,
+          opacity: style.opacity,
+          top: `${style.top}px`,
+          width: `${style.size}px`
+        }}
+      />
     </div>
   )
-}
+})
 
 export default Button

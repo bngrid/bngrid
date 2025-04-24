@@ -2,23 +2,48 @@
 
 import Button from '@/components/ui/button'
 import Input from '@/components/ui/input'
-import { Search } from 'lucide-react'
+import { PasswordSchema, UsernameSchema } from '@/schemas/user'
+import { Loader, Search } from 'lucide-react'
 import { useState } from 'react'
 
 function TestPage() {
-  const [value, setValue] = useState('')
+  const [form, setForm] = useState({
+    password: '',
+    username: ''
+  })
+  const [loading, setLoading] = useState(false)
   return (
-    <div className="flex h-full flex-col items-center justify-center gap-2">
+    <div className="flex h-full flex-col items-center justify-center gap-3">
       <h1 className="text-xl font-bold">测试页面</h1>
-      <Button icon={<Search />}>测试</Button>
+      <Button
+        icon={<Loader />}
+        onTap={() => {
+          setLoading(true)
+          setTimeout(() => {
+            setLoading(false)
+          }, 3000)
+        }}
+      >
+        加载
+      </Button>
       <Input
         field="账号"
-        hint="请输入正确用户名11111111111111111111111111111111111111111111111111111111111"
-        onChange={setValue}
+        loading={loading}
+        onChange={username => setForm({ ...form, username })}
         prefix={<Search />}
-        value={value}
+        suffix={'hhh'}
+        value={form.username}
+        verify={UsernameSchema}
       />
-      <Button href="/" onTap={() => console.log('aaa')}>
+      <Input
+        field="密码"
+        loading={loading}
+        onChange={password => setForm({ ...form, password })}
+        type="password"
+        value={form.password}
+        verify={PasswordSchema}
+      />
+      <Button href="/" loading={loading} onTap={() => console.log('aaa')}>
         跳转
       </Button>
     </div>
