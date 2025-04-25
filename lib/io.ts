@@ -6,7 +6,7 @@ type Global = typeof globalThis & {
 
 const { MINIO_SECRET: secretKey, USER_NAME: accessKey } = process.env
 if (!accessKey || !secretKey) {
-  throw new Error('未找到 USER_NAME 和 MINIO_SECRET 环境变量')
+  throw new Error('未找到 USER_NAME 或 MINIO_SECRET 环境变量')
 }
 
 const globalWithMinio = <Global>global

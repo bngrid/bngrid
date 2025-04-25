@@ -1,5 +1,6 @@
 'use client'
 
+import { getHeaders } from '@/api/test'
 import Button from '@/components/ui/button'
 import Input from '@/components/ui/input'
 import { PasswordSchema, UsernameSchema } from '@/schemas/user'
@@ -12,6 +13,10 @@ function TestPage() {
     username: ''
   })
   const [loading, setLoading] = useState(false)
+  async function handleGet() {
+    const data = await getHeaders()
+    console.log(data)
+  }
   return (
     <div className="flex h-full flex-col items-center justify-center gap-3">
       <h1 className="text-xl font-bold">测试页面</h1>
@@ -46,6 +51,7 @@ function TestPage() {
       <Button href="/" loading={loading} onTap={() => console.log('aaa')}>
         跳转
       </Button>
+      <Button onTap={handleGet}>获取headers</Button>
     </div>
   )
 }

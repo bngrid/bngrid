@@ -2,6 +2,7 @@
 
 import { data } from '@/api/data'
 import redis from '@/lib/redis'
+import { headers } from 'next/headers'
 
 import { convertWallpaper } from './image'
 
@@ -37,6 +38,11 @@ export async function func(f: (data: string) => void) {
     f('hello')
   }, 5000)
   return () => clearInterval(timer)
+}
+
+export async function getHeaders() {
+  const headersList = await headers()
+  return data(true, headersList)
 }
 
 export async function getRedis() {

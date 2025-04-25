@@ -3,7 +3,7 @@
 import { data } from '@/api/data'
 import { User } from '@/generated/prisma'
 import redis from '@/lib/redis'
-import generateRandomCode from '@/utils/random-string'
+import { customAlphabet } from 'nanoid'
 import { createTransport } from 'nodemailer'
 
 type Reason = 'login' | 'modify' | 'verify'
@@ -16,7 +16,7 @@ const reasons = {
 
 const { EMAIL_PASS: emailPass, EMAIL_USER: emailUser } = process.env
 if (!emailUser || !emailPass) {
-  throw new Error('未找到 EMAIL_USER 和 EMAIL_PASS 环境变量')
+  throw new Error('未找到 EMAIL_USER 或 EMAIL_PASS 环境变量')
 }
 
 const transporter = createTransport({
@@ -34,13 +34,13 @@ export async function signEmail({ email, username }: User, reason: Reason) {
 
   if (await redis.exists(key)) {
     const ttl = await redis.ttl(key)
-    if (ttl > 5 * 60) {
+    if (ttl > 9 * 60) {
       return data(false, '距离上次发送时间不足一分钟')
     }
     await redis.del(key)
   }
 
-  const code = generateRandomCode()
+  const code = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 6)
   const mailOptions = {
     from: emailUser,
     html: `
@@ -49,14 +49,14 @@ export async function signEmail({ email, username }: User, reason: Reason) {
 	<h2>BNGRID 邮箱验证</h2>
 	<p>${username} 您好，${reasons[reason]}输入下方验证码：</p>
 	<h1 style="color:#6699FF">${code}</h1>
-	<p>6分钟内有效，若非您本人操作，请忽略此邮件。</p>
+	<p>10分钟内有效，若非您本人操作，请忽略此邮件。</p>
 	<hr />
 	<h3>bngrid.com</h3>
 	<small>本邮件由系统自动发出，请勿回复。</small>
 </div>
 `.trim(),
     subject: `您的 BNGRID 验证码是：${code}`,
-    text: `${username} 您好，${reasons[reason]}输入下方验证码：${code}。6分钟内有效，若非您本人操作，请忽略此邮件。`,
+    text: `${username} 您好，${reasons[reason]}输入下方验证码：${code}。10分钟内有效，若非您本人操作，请忽略此邮件。`,
     to: email
   }
 
@@ -70,7 +70,7 @@ export async function signEmail({ email, username }: User, reason: Reason) {
     code,
     reason
   })
-  await redis.expire(key, 6 * 60)
+  await redis.expire(key, 10 * 60)
   return data(true, '邮件发送成功')
 }
 
