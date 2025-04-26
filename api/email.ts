@@ -1,10 +1,11 @@
 'use server'
 
-import { data } from '@/api/data'
 import { User } from '@/generated/prisma'
 import redis from '@/lib/redis'
 import { customAlphabet } from 'nanoid'
 import { createTransport } from 'nodemailer'
+
+import { data } from './data'
 
 type Reason = 'login' | 'modify' | 'verify'
 
@@ -15,9 +16,7 @@ const reasons = {
 }
 
 const { EMAIL_PASS: emailPass, EMAIL_USER: emailUser } = process.env
-if (!emailUser || !emailPass) {
-  throw new Error('未找到 EMAIL_USER 或 EMAIL_PASS 环境变量')
-}
+if (!emailUser || !emailPass) throw new Error('未找到 EMAIL_USER 或 EMAIL_PASS 环境变量')
 
 const transporter = createTransport({
   auth: {
@@ -29,21 +28,18 @@ const transporter = createTransport({
   secure: true
 })
 
-export async function signEmail({ email, username }: User, reason: Reason) {
-  const key = `email:code:${username}`
-
-  if (await redis.exists(key)) {
-    const ttl = await redis.ttl(key)
-    if (ttl > 9 * 60) {
-      return data(false, '距离上次发送时间不足一分钟')
+export async function signEmail({ reason, user: { email, username } }: { reason: Reason; user: User }) {
+  try {
+    const key = `email:code:${username}`
+    if (await redis.exists(key)) {
+      const ttl = await redis.ttl(key)
+      if (ttl > 9 * 60) return data(false, '距离上次发送时间不足一分钟')
+      await redis.del(key)
     }
-    await redis.del(key)
-  }
-
-  const code = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 6)
-  const mailOptions = {
-    from: emailUser,
-    html: `
+    const code = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 6)()
+    const mailOptions = {
+      from: emailUser,
+      html: `
 <div style="background-color:#E1E1E1;color:#FFFFFF;padding:30px;border-radius:10px;max-width:600px;margin-inline:auto">
 	<img width="30" height="30" src="https://bngrid.com/logo.png" />
 	<h2>BNGRID 邮箱验证</h2>
@@ -55,37 +51,31 @@ export async function signEmail({ email, username }: User, reason: Reason) {
 	<small>本邮件由系统自动发出，请勿回复。</small>
 </div>
 `.trim(),
-    subject: `您的 BNGRID 验证码是：${code}`,
-    text: `${username} 您好，${reasons[reason]}输入下方验证码：${code}。10分钟内有效，若非您本人操作，请忽略此邮件。`,
-    to: email
-  }
-
-  try {
+      subject: `您的 BNGRID 验证码是：${code}`,
+      text: `${username} 您好，${reasons[reason]}输入下方验证码：${code}。10分钟内有效，若非您本人操作，请忽略此邮件。`,
+      to: email
+    }
     await transporter.sendMail(mailOptions)
+    await redis.hset(key, {
+      code,
+      reason
+    })
+    await redis.expire(key, 10 * 60)
+    return data(true, '验证码发送成功')
   } catch {
-    return data(false, '邮件发送失败')
+    return data(false, '验证码发送失败')
   }
-
-  await redis.hset(key, {
-    code,
-    reason
-  })
-  await redis.expire(key, 10 * 60)
-  return data(true, '邮件发送成功')
 }
 
-export async function verifyEmail({ username }: User, reason: Reason, code: string) {
-  const key = `email:code:${username}`
-
-  if (!(await redis.exists(key))) {
+export async function verifyEmail({ code, reason, username }: { code: string; reason: Reason; username: string }) {
+  try {
+    const key = `email:code:${username}`
+    if (!(await redis.exists(key))) return data(false, '验证码校验失败')
+    const codeInfo = await redis.hgetall(key)
+    if (codeInfo.reason !== reason || codeInfo.code !== code) return data(false, '验证码校验失败')
+    await redis.del(key)
+    return data(true, '验证码校验成功')
+  } catch {
     return data(false, '验证码校验失败')
   }
-
-  const codeInfo = await redis.hgetall(key)
-  if (codeInfo.reason !== reason || codeInfo.code !== code) {
-    return data(false, '验证码校验失败')
-  }
-
-  await redis.del(key)
-  return data(true, '验证码校验成功')
 }

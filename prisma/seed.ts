@@ -7,9 +7,7 @@ async function main() {
   console.log('正在添加超级管理员……')
   const salt = genSaltSync()
   const password = process.env.USER_PASSWORD
-  if (!password) {
-    throw new Error('未找到 USER_PASSWORD 环境变量')
-  }
+  if (!password) throw new Error('未找到 USER_PASSWORD 环境变量')
   const user = await prisma.user.upsert({
     create: {
       email: 'bngrid@outlook.com',

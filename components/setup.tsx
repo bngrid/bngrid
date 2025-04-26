@@ -24,11 +24,8 @@ const Setup = () => {
   }, [size])
   useEffect(() => {
     const classList = document.documentElement.classList
-    if (theme === 'dark') {
-      classList.add('dark')
-    } else {
-      classList.remove('dark')
-    }
+    if (theme === 'dark') classList.add('dark')
+    else classList.remove('dark')
   }, [theme])
   return <></>
 }

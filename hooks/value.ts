@@ -14,12 +14,7 @@ const easings = {
   easeIn: (x: number) => x ** 3,
   easeInOut: (x: number) => (x < 0.5 ? 4 * x ** 3 : 1 - 0.5 * (-2 * x + 2) ** 3),
   easeOut: (x: number) => 1 - (1 - x) ** 3,
-  elastic: (x: number) =>
-    x === 0
-      ? 0
-      : x === 1
-        ? 1
-        : 2 ** (-10 * x) * Math.sin((x * 10 - 0.75) * ((2 * Math.PI) / 3)) + 1,
+  elastic: (x: number) => (x === 0 ? 0 : x === 1 ? 1 : 2 ** (-10 * x) * Math.sin((x * 10 - 0.75) * ((2 * Math.PI) / 3)) + 1),
   linear: (x: number) => x
 }
 
@@ -65,19 +60,15 @@ const useValue = <Value extends object>(initial: Value) => {
           return [
             key,
             value +
-              ((<{ [key: string]: number }>(
-                (typeof target === 'function' ? target(current.current) : target)
-              ))[key] -
-                value) *
+              ((<{ [key: string]: number }>(typeof target === 'function' ? target(current.current) : target))[key] - value) *
                 easings[easing](progress)
           ]
         })
       )
       update(result)
       onUpdate?.(result)
-      if (progress < 1) {
-        animeId.current = requestAnimationFrame(run)
-      } else {
+      if (progress < 1) animeId.current = requestAnimationFrame(run)
+      else {
         stop()
         update(target)
         onComplete?.()

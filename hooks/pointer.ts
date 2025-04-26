@@ -28,24 +28,18 @@ const usePointer = (
   const data = useRef<Record<string, any>>({})
   useEffect(() => {
     const element = ref.current
-    if (!element) {
-      throw new Error('指针元素不存在')
-    }
+    if (!element) throw new Error('指针元素不存在')
     element.style.pointerEvents = 'auto'
     const { down, move, up } = handler(data.current, event => bubble(element, event))
     element.onpointerdown = event => {
       event.stopPropagation()
-      if (pointerManager.has(id)) {
-        return bubble(element, event)
-      }
+      if (pointerManager.has(id)) return bubble(element, event)
       element.setPointerCapture(event.pointerId)
       pointerManager.set(id, event.pointerId)
       down(event, element)
     }
     element.onpointermove = event => {
-      if (pointerManager.get(id) === event.pointerId) {
-        move(event, element)
-      }
+      if (pointerManager.get(id) === event.pointerId) move(event, element)
     }
     element.onpointerup = element.onpointercancel = event => {
       if (pointerManager.get(id) === event.pointerId) {
@@ -55,11 +49,7 @@ const usePointer = (
       }
     }
     return () => {
-      element.onpointerdown =
-        element.onpointermove =
-        element.onpointerup =
-        element.onpointercancel =
-          null
+      element.onpointerdown = element.onpointermove = element.onpointerup = element.onpointercancel = null
       element.style.pointerEvents = 'none'
     }
   }, [ref, id, handler])

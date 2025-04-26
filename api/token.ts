@@ -1,51 +1,43 @@
 'use server'
 
-import { data } from '@/api/data'
 import { User } from '@/generated/prisma'
 import redis from '@/lib/redis'
 import { sign, verify } from 'jsonwebtoken'
 import { nanoid } from 'nanoid'
 import { cookies, headers } from 'next/headers'
 
+import { data } from './data'
+
 type Token = {
   email: string
-  jwt: string
+  nonce: string
   role: User['role']
   time: number
   username: string
 }
 
-const { JWT_PRIVATE_KEY: privateKey, JWT_PUBLIC_KEY: publicKey } = process.env
-if (!publicKey || !privateKey) {
-  throw new Error('未找到 JWT_PUBLIC_KEY 或 JWT_PRIVATE_KEY 环境变量')
-}
+const { JWT_PRIVATE_KEY: priv, JWT_PUBLIC_KEY: pub } = process.env
+if (!pub || !priv) throw new Error('未找到 JWT_PUBLIC_KEY 或 JWT_PRIVATE_KEY 环境变量')
 
-export async function signToken({
-  email,
-  role,
-  username
-}: {
-  email: string
-  role: User['role']
-  username: string
-}) {
+export async function signToken({ email, role, username }: Omit<Token, 'nonce' | 'time'>) {
   try {
-    const jwt = nanoid()
+    const nonce = nanoid()
+    const key = `token:${username}`
     await redis
       .pipeline()
-      .hset(`token:${username}`, jwt, (await headers()).get('user-agent') ?? '')
-      .expire(`token:${username}`, 3 * 24 * 60 * 60)
+      .hset(key, nonce, (await headers()).get('user-agent') ?? '')
+      .expire(key, 3 * 24 * 60 * 60)
       .exec()
-    const token = {
+    const payload = {
       email,
-      jwt,
+      nonce,
       role,
       time: Date.now(),
       username
     }
     ;(await cookies()).set(
       'token',
-      sign(token, privateKey ?? '', {
+      sign(payload, priv ?? '', {
         algorithm: 'RS256',
         expiresIn: '3d',
         issuer: 'banno'
@@ -57,7 +49,7 @@ export async function signToken({
         secure: true
       }
     )
-    return data(true, token)
+    return data(true, payload)
   } catch {
     return data(false, 'TOKEN 生成失败')
   }
@@ -66,28 +58,22 @@ export async function signToken({
 export async function verifyToken() {
   try {
     const token = (await cookies()).get('token')?.value
-    if (!token) {
-      return data(false, 'TOKEN 不存在')
-    }
-    const result = <Token>verify(token, publicKey ?? '', {
+    if (!token) return data(false, 'TOKEN 不存在')
+    const payload = <Token>verify(token, pub ?? '', {
       algorithms: ['RS256'],
       issuer: 'banno'
     })
-    if (result.time + 10 * 60 * 1000 < Date.now()) {
-      if (
-        (await redis.hget(`token:${result.username}`, result.jwt)) !==
-        (await headers()).get('user-agent')
-      ) {
-        await redis.hdel(`token:${result.username}`, result.jwt)
-        return data(false, 'TOKEN 验证失败')
-      }
-      return await signToken({
-        email: result.email,
-        role: result.role,
-        username: result.username
-      })
+    if (Date.now() - payload.time < 10 * 60 * 1000) return data(true, payload)
+    const key = `token:${payload.username}`
+    if ((await redis.hget(key, payload.nonce)) !== (await headers()).get('user-agent')) {
+      await redis.hdel(key, payload.nonce)
+      return data(false, 'TOKEN 验证失败')
     }
-    return data(true, result)
+    return await signToken({
+      email: payload.email,
+      role: payload.role,
+      username: payload.username
+    })
   } catch {
     return data(false, 'TOKEN 验证失败')
   }

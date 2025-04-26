@@ -20,8 +20,7 @@ export const metadata: Metadata = {
   },
   applicationName: 'BNGRID',
   authors: { name: 'Banno', url: 'https://bngrid.com/banno' },
-  description:
-    'Huarong Grid & Atomic Widgets & Smooth Animation, Your modern browser launcher.',
+  description: 'Huarong Grid & Atomic Widgets & Smooth Animation, Your modern browser launcher.',
   formatDetection: {
     address: false,
     date: false,
@@ -47,12 +46,7 @@ export const viewport: Viewport = {
 const RootLayout = ({ children }: { children: ReactNode }) => {
   return (
     <html className="dark h-full" lang="zh-CN">
-      <body
-        className={cx(
-          'font-family bg-background text-foreground h-full touch-none antialiased select-none',
-          font.variable
-        )}
-      >
+      <body className={cx('font-family bg-background text-foreground h-full touch-none antialiased select-none', font.variable)}>
         <Providers>
           <Setup />
           {children}

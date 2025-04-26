@@ -82,12 +82,7 @@ const Button = memo(function Button({
       })
     },
     move: event => {
-      if (
-        (event.clientX - data.initial.x) ** 2 + (event.clientY - data.initial.y) ** 2 <=
-        81
-      ) {
-        return
-      }
+      if ((event.clientX - data.initial.x) ** 2 + (event.clientY - data.initial.y) ** 2 <= 81) return
       data.timer = clearTimeout(data.timer)
       return bubble(event)
     },
@@ -95,11 +90,7 @@ const Button = memo(function Button({
       clearTimeout(data.timer)
       if (data.timer) {
         onTap?.(event)
-        if (href) {
-          router.push(
-            href.startsWith('http') ? `/redirect?to=${encodeURIComponent(href)}` : href
-          )
-        }
+        if (href) router.push(href.startsWith('http') ? `/redirect?to=${encodeURIComponent(href)}` : href)
       }
       anime({
         target: value => ({

@@ -4,15 +4,7 @@ import sharp from 'sharp'
 
 import { data } from './data'
 
-const imageTypes = new Set([
-  'image/avif',
-  'image/gif',
-  'image/jpeg',
-  'image/png',
-  'image/svg+xml',
-  'image/tiff',
-  'image/webp'
-])
+const imageTypes = ['image/avif', 'image/gif', 'image/jpeg', 'image/png', 'image/svg+xml', 'image/tiff', 'image/webp']
 
 const maxSize = {
   avatar: 5 * 1024 * 1024,
@@ -20,13 +12,9 @@ const maxSize = {
 }
 
 export async function convertAvatar(file: File) {
-  if (!imageTypes.has(file.type)) {
-    return data(false, '头像格式错误')
-  }
-  if (file.size > maxSize.avatar) {
-    return data(false, '头像大小不能超过5MB')
-  }
   try {
+    if (!imageTypes.includes(file.type)) return data(false, '头像格式错误')
+    if (file.size > maxSize.avatar) return data(false, '头像大小不能超过5MB')
     const buffer = await sharp(await file.arrayBuffer())
       .resize(300, 300)
       .flatten({ background: '#FFFFFF' })
@@ -39,13 +27,9 @@ export async function convertAvatar(file: File) {
 }
 
 export async function convertWallpaper(file: File) {
-  if (!imageTypes.has(file.type)) {
-    return data(false, '壁纸格式错误')
-  }
-  if (file.size > maxSize.wallpaper) {
-    return data(false, '壁纸大小不能超过10MB')
-  }
   try {
+    if (!imageTypes.includes(file.type)) return data(false, '壁纸格式错误')
+    if (file.size > maxSize.wallpaper) return data(false, '壁纸大小不能超过10MB')
     const buffer = await sharp(await file.arrayBuffer())
       .flatten({ background: '#FFFFFF' })
       .webp({ lossless: true })

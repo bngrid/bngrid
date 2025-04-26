@@ -39,11 +39,7 @@ const Input = memo(function Input({
         'text-foreground focus-within:inset-ring-theme pointer-events-auto! relative inline-flex w-36 items-center justify-center gap-1 rounded-[0.675rem] bg-transparent py-1.5 pr-1.5 inset-ring-[0.1rem]',
         prefix || loading ? 'pl-1.5' : 'pl-2',
         disabled || loading ? 'cursor-not-allowed opacity-60' : 'cursor-text',
-        value &&
-          verify &&
-          (parse?.success
-            ? 'focus-within:inset-ring-success!'
-            : 'focus-within:inset-ring-error!'),
+        value && verify && (parse?.success ? 'focus-within:inset-ring-success!' : 'focus-within:inset-ring-error!'),
         className
       )}
       htmlFor={id}
@@ -81,7 +77,7 @@ const Input = memo(function Input({
       )}
       {suffix}
       <div className="absolute top-[calc(100%+0.2rem)] left-0 text-[0.8rem] break-all text-transparent peer-focus:text-current">
-        {parse?.error?.issues[0]?.message}
+        {parse?.error?.errors[0]?.message}
       </div>
     </label>
   )

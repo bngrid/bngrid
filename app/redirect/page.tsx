@@ -34,21 +34,13 @@ const RedirectPage = () => {
     <div className="flex h-screen flex-col items-center justify-center gap-6 p-4 text-center">
       <h1 className="text-2xl font-bold">您即将离开本站</h1>
       <p>您将被重定向到：</p>
-      <div className="max-w-lg rounded-lg bg-gray-100 p-4 break-all dark:bg-gray-800">
-        {targetUrl}
-      </div>
+      <div className="max-w-lg rounded-lg bg-gray-100 p-4 break-all dark:bg-gray-800">{targetUrl}</div>
       <p>{countdown > 0 ? `${countdown}秒后自动跳转` : '正在跳转...'}</p>
       <div className="flex gap-4">
-        <Button
-          className="bg-foreground text-background"
-          onTap={() => (window.location.href = targetUrl)}
-        >
+        <Button className="bg-foreground text-background" onTap={() => (window.location.href = targetUrl)}>
           立即前往
         </Button>
-        <Button
-          className="bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
-          onTap={() => window.history.back()}
-        >
+        <Button className="bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200" onTap={() => window.history.back()}>
           返回上页
         </Button>
       </div>

@@ -1,8 +1,8 @@
 'use server'
 
-import { data } from '@/api/data'
 import minio from '@/lib/io'
 
+import { data } from './data'
 import { convertAvatar, convertWallpaper } from './image'
 
 type Bucket = 'avatar' | 'wallpaper'
@@ -14,7 +14,7 @@ const converters = {
   wallpaper: convertWallpaper
 }
 
-export async function downloadImage(bucket: Bucket, name: string) {
+export async function downloadImage({ bucket, name }: { bucket: Bucket; name: string }) {
   try {
     const url = await minio.presignedGetObject(bucket, `${name}.webp`, imageExpires)
     return data(true, url)
@@ -23,15 +23,11 @@ export async function downloadImage(bucket: Bucket, name: string) {
   }
 }
 
-export async function uploadImage(bucket: Bucket, name: string, file: File) {
-  if (!(bucket in converters)) {
-    return data(false, '存储桶名称错误')
-  }
+export async function uploadImage({ bucket, file, name }: { bucket: Bucket; file: File; name: string }) {
   try {
+    if (!(bucket in converters)) return data(false, '存储桶名称错误')
     const res = await converters[bucket](file)
-    if (!res.success) {
-      return res
-    }
+    if (!res.success) return res
     const { etag } = await minio.putObject(bucket, `${name}.webp`, res.result)
     return data(true, etag)
   } catch {

@@ -5,9 +5,7 @@ type Global = typeof globalThis & {
 }
 
 const { REDIS_PASSWORD: redisPassword } = process.env
-if (!redisPassword) {
-  throw new Error('未找到 REDIS_PASSWORD 环境变量')
-}
+if (!redisPassword) throw new Error('未找到 REDIS_PASSWORD 环境变量')
 
 const globalWithRedis = <Global>global
 
@@ -17,8 +15,6 @@ const redis =
     password: redisPassword
   })
 
-if (process.env.NODE_ENV !== 'production') {
-  globalWithRedis.redis = redis
-}
+if (process.env.NODE_ENV !== 'production') globalWithRedis.redis = redis
 
 export default redis

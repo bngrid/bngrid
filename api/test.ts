@@ -1,10 +1,12 @@
 'use server'
 
-import { data } from '@/api/data'
+import db from '@/lib/db'
 import redis from '@/lib/redis'
 import { headers } from 'next/headers'
 
+import { data } from './data'
 import { convertWallpaper } from './image'
+import { verifyToken } from './token'
 
 export async function decrRedis() {
   try {
@@ -51,6 +53,21 @@ export async function getRedis() {
     return data(true, result)
   } catch {
     return data(false, '出错了')
+  }
+}
+
+export async function getUserInfo() {
+  try {
+    const verify = await verifyToken()
+    if (!verify.success) return verify
+    const user = await db.user.findUnique({
+      where: {
+        username: verify.result.username
+      }
+    })
+    return data(true, user)
+  } catch {
+    return data(false, '获取用户信息失败')
   }
 }
 
@@ -115,9 +132,7 @@ export async function ttlRedis() {
 export async function uploadFile(file: File) {
   try {
     const res = await convertWallpaper(file)
-    if (!res.success) {
-      return res
-    }
+    if (!res.success) return res
     return data(true, res.result.toString('base64'))
   } catch {
     return data(false, '出错了')

@@ -5,9 +5,7 @@ type Global = typeof globalThis & {
 }
 
 const { MINIO_SECRET: secretKey, USER_NAME: accessKey } = process.env
-if (!accessKey || !secretKey) {
-  throw new Error('未找到 USER_NAME 或 MINIO_SECRET 环境变量')
-}
+if (!accessKey || !secretKey) throw new Error('未找到 USER_NAME 或 MINIO_SECRET 环境变量')
 
 const globalWithMinio = <Global>global
 const minio =
@@ -17,8 +15,6 @@ const minio =
     endPoint: 'store.bngrid.com',
     secretKey
   })
-if (process.env.NODE_ENV !== 'production') {
-  globalWithMinio.minio = minio
-}
+if (process.env.NODE_ENV !== 'production') globalWithMinio.minio = minio
 
 export default minio
