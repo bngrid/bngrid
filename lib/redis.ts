@@ -4,14 +4,15 @@ type Global = typeof globalThis & {
   redis?: Redis
 }
 
-const { REDIS_PASSWORD: redisPassword } = process.env
-if (!redisPassword) throw new Error('未找到 REDIS_PASSWORD 环境变量')
+const { REDIS_HOST: redisHost, REDIS_PASSWORD: redisPassword } = process.env
+if (!redisHost || !redisPassword) throw new Error('未找到 REDIS_HOST 或 REDIS_PASSWORD 环境变量')
 
 const globalWithRedis = <Global>global
 
 const redis =
   globalWithRedis.redis ??
   new Redis({
+    host: redisHost,
     password: redisPassword
   })
 

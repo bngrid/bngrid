@@ -2,9 +2,9 @@
 
 import Button from '@/components/ui/button'
 import { useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 
-const RedirectPage = () => {
+const Redirect = () => {
   const searchParams = useSearchParams()
   const targetUrl = searchParams.get('to')
   const [countdown, setCountdown] = useState(5)
@@ -45,6 +45,14 @@ const RedirectPage = () => {
         </Button>
       </div>
     </div>
+  )
+}
+
+const RedirectPage = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Redirect />
+    </Suspense>
   )
 }
 
