@@ -51,7 +51,7 @@ const LoginPage = () => {
       <div className="flex w-44 flex-col gap-3 overflow-hidden">
         <div className="flex justify-between">
           <Tabs items={items} onChange={setSelected} selected={selected} />
-          <Button className="bg-transparent p-0.5! text-current">注册</Button>
+          <Button className="bg-transparent p-0.5! text-current transition-[background-color]!">注册</Button>
         </div>
         <div className="flex w-92 justify-between" style={{ transform: `translate3d(${style.left}rem, 0, 0)` }}>
           <div className="flex flex-col gap-3">

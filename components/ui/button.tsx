@@ -104,7 +104,7 @@ const Button = memo(function Button({
   return (
     <div
       className={cx(
-        'bg-foreground text-background relative inline-flex items-center justify-center gap-1 overflow-hidden rounded-[0.675rem] py-1.5',
+        'bg-foreground text-background relative inline-flex items-center justify-center gap-1 overflow-hidden rounded-[0.675rem] py-1.5 transition-[color,background-color] duration-300',
         children ? 'px-2' : 'px-1.5',
         disabled || loading ? 'cursor-not-allowed opacity-60' : 'cursor-pointer',
         className

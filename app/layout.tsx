@@ -45,12 +45,17 @@ export const viewport: Viewport = {
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html className="dark h-full" lang="zh-CN">
-      <body className={cx('font-family bg-background text-foreground relative h-full touch-none antialiased select-none', font.variable)}>
+      <body
+        className={cx(
+          'font-family bg-background text-foreground relative h-full touch-none leading-[1.2em] antialiased transition-[color,background-color] duration-300 select-none',
+          font.variable
+        )}
+      >
         <Providers>
           <Setup />
           {children}
         </Providers>
-        <div className="absolute inset-0 bg-transparent dark:bg-black/30" />
+        <div className="absolute inset-0 bg-transparent transition-[background-color] duration-300 dark:bg-black/30" />
       </body>
     </html>
   )
