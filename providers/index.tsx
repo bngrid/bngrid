@@ -1,11 +1,9 @@
 'use client'
 
-import { ReactNode } from 'react'
-
 import { ParamStoreProvider } from './param-store'
 import { ThemeStoreProvider } from './theme-store'
 
-const Providers = ({ children }: { children: ReactNode }) => {
+const Providers = ({ children }: { children: React.ReactNode }) => {
   return (
     <ParamStoreProvider>
       <ThemeStoreProvider>{children}</ThemeStoreProvider>

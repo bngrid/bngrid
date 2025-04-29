@@ -41,7 +41,7 @@ export async function signEmail({ reason, user: { email, username } }: { reason:
       from: emailUser,
       html: `
 <div style="background-color:#1E1E1E;color:#FFFFFF;padding:30px;border-radius:10px;max-width:600px;margin-inline:auto">
-	<img width="30" height="30" src="https://bngrid.com/logo.png" />
+	<img src="https://bngrid.com/icon.svg" />
 	<h2>BNGRID 邮箱验证</h2>
 	<p>${username} 您好，${reasons[reason]}输入下方验证码：</p>
 	<h1 style="color:#6699FF">${code}</h1>

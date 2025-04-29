@@ -15,7 +15,8 @@ const config = [
   {
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
-      'prettier/prettier': 'error'
+      'prettier/prettier': 'error',
+      'react-hooks/exhaustive-deps': 'off'
     }
   }
 ]

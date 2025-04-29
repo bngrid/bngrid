@@ -26,7 +26,7 @@ const Input = memo(function Input({
   onChange?: (value: string) => void
   prefix?: ReactNode
   suffix?: ReactNode
-  type?: 'password' | 'text'
+  type?: 'code' | 'password' | 'text'
   value?: string
   verify?: ZodString
 }) {
@@ -36,7 +36,7 @@ const Input = memo(function Input({
   return (
     <label
       className={cx(
-        'text-foreground focus-within:inset-ring-theme pointer-events-auto! relative inline-flex w-36 items-center justify-center gap-1 rounded-[0.675rem] bg-transparent py-1.5 pr-1.5 inset-ring-[0.1rem]',
+        'text-foreground focus-within:inset-ring-theme pointer-events-auto! relative inline-flex w-44 items-center justify-center gap-1 rounded-[0.675rem] bg-transparent py-1.5 pr-1.5 inset-ring-[0.1rem]',
         prefix || loading ? 'pl-1.5' : 'pl-2',
         disabled || loading ? 'cursor-not-allowed opacity-60' : 'cursor-text',
         value && verify && (parse?.success ? 'focus-within:inset-ring-success!' : 'focus-within:inset-ring-error!'),
@@ -47,9 +47,13 @@ const Input = memo(function Input({
       {loading ? <LoaderCircle className="animate-spin" /> : prefix}
       <input
         autoComplete="off"
-        className="peer pointer-events-auto! min-w-0 flex-1 outline-none placeholder:text-current disabled:cursor-not-allowed"
+        className={cx(
+          'peer pointer-events-auto! min-w-0 flex-1 outline-none placeholder:tracking-normal placeholder:text-current disabled:cursor-not-allowed',
+          type === 'code' && 'tracking-[2rem]'
+        )}
         disabled={disabled || loading}
         id={id}
+        maxLength={type === 'code' ? 6 : undefined}
         onChange={e => onChange?.(e.target.value)}
         placeholder={field}
         type={type === 'password' && !visible ? 'password' : 'text'}

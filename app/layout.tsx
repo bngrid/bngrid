@@ -2,11 +2,10 @@ import '@/assets/globals.css'
 
 import type { Metadata, Viewport } from 'next'
 
-import Setup from '@/components/setup'
+import Setup from '@/components/layouts/setup'
 import Providers from '@/providers'
 import cx from '@/utils/cx'
 import localFont from 'next/font/local'
-import { ReactNode } from 'react'
 
 const font = localFont({
   src: '../assets/font.woff2',
@@ -43,7 +42,7 @@ export const viewport: Viewport = {
   ]
 }
 
-const RootLayout = ({ children }: { children: ReactNode }) => {
+const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html className="dark h-full" lang="zh-CN">
       <body className={cx('font-family bg-background text-foreground relative h-full touch-none antialiased select-none', font.variable)}>
