@@ -1,21 +1,24 @@
-import { type NextRequest, NextResponse } from 'next/server'
+import { verify } from 'jsonwebtoken'
+import { NextRequest, NextResponse } from 'next/server'
 
-import { verifyToken } from './api/token'
+const { JWT_PUBLIC_KEY: pub } = process.env
+if (!pub) throw new Error('未找到 JWT_PUBLIC_KEY 环境变量')
 
-// 定义不需要验证的路径
-const PUBLIC_PATHS = ['/login', '/register', '/verify', '/redirect']
+const paths = ['/login', '/register', '/verify', '/redirect']
 
 export async function middleware(request: NextRequest) {
-  const path = request.nextUrl.pathname
-  if (PUBLIC_PATHS.includes(path)) {
+  try {
+    if (paths.includes(request.nextUrl.pathname)) return NextResponse.next()
+    verify(request.cookies.get('token')?.value ?? '', pub ?? '', {
+      algorithms: ['RS256'],
+      issuer: 'banno'
+    })
     return NextResponse.next()
-  }
-  const data = await verifyToken()
-  if (!data.success) {
-    return NextResponse.redirect('/login')
+  } catch {
+    return NextResponse.redirect(new URL('/login', request.url))
   }
 }
 
 export const config = {
-  matcher: ['/((?!\\.)[^.]*$)']
+  matcher: '/((?!_next|.*\\.).*)'
 }
