@@ -15,7 +15,9 @@ const Button = memo(function Button({
   icon,
   loading,
   onPress,
-  onTap
+  onTap,
+  target = 'push',
+  type = 'solid'
 }: {
   children?: ReactNode
   className?: string
@@ -25,6 +27,8 @@ const Button = memo(function Button({
   loading?: boolean
   onPress?: (event: PointerEvent) => void
   onTap?: (event: PointerEvent) => void
+  target?: 'push' | 'replace'
+  type?: 'outline' | 'solid' | 'text'
 }) {
   const {
     anime,
@@ -90,7 +94,7 @@ const Button = memo(function Button({
       clearTimeout(data.timer)
       if (data.timer) {
         onTap?.(event)
-        if (href) router.push(href.startsWith('http') ? `/redirect?to=${encodeURIComponent(href)}` : href)
+        if (href) router[target](href.startsWith('http') ? `/redirect?to=${encodeURIComponent(href)}` : href)
       }
       anime({
         target: value => ({
@@ -104,8 +108,11 @@ const Button = memo(function Button({
   return (
     <div
       className={cx(
-        'bg-foreground text-background relative inline-flex items-center justify-center gap-1 overflow-hidden rounded-[0.675rem] py-1.5 transition-[color,background-color] duration-300',
+        'relative inline-flex items-center justify-center gap-1 overflow-hidden duration-300',
         children ? 'px-2' : 'px-1.5',
+        type === 'solid' && 'bg-foreground text-background rounded-[0.675rem] py-1.5 transition-[color,background-color]',
+        type === 'outline' && 'rounded-[0.675rem] py-1.5 text-inherit inset-ring-[0.1rem] transition-[background-color,box-shadow]',
+        type === 'text' && 'rounded-[0.425rem] px-1! py-0.5 transition-none',
         disabled || loading ? 'cursor-not-allowed opacity-60' : 'cursor-pointer',
         className
       )}

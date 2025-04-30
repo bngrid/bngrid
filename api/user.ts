@@ -1,7 +1,7 @@
 'use server'
 
 import db from '@/lib/db'
-import { LoginByCodeSchema, LoginByPasswordSchema, RegisterSchema } from '@/schemas/user'
+import { EmailSchema, LoginByCodeSchema, LoginByPasswordSchema, RegisterSchema } from '@/schemas/user'
 import { compare, genSaltSync, hashSync } from 'bcryptjs'
 
 import { data } from './data'
@@ -76,17 +76,20 @@ export async function register({ email, password, username }: { email: string; p
   }
 }
 
-export async function signVerifyEmail(email: string) {
+export async function signUserEmail({ email, reason }: { email: string; reason: 'login' | 'modify' | 'verify' }) {
   try {
+    const parse = EmailSchema.safeParse(email)
+    if (!parse.success) return data(false, parse.error.errors[0].message)
     const user = await db.user.findUnique({
       where: {
         email
       }
     })
     if (!user) return data(false, '用户不存在')
-    if (user.status !== 'pending') return data(false, '用户已验证')
+    if (reason === 'verify' && user.status !== 'pending') return data(false, '用户已验证')
+    if (reason !== 'verify' && errors[user.status]) return data(false, errors[user.status])
     return await signEmail({
-      reason: 'verify',
+      reason,
       user
     })
   } catch {
@@ -94,8 +97,10 @@ export async function signVerifyEmail(email: string) {
   }
 }
 
-export async function verifyVerifyEmail({ code, email }: { code: string; email: string }) {
+export async function verifyUserEmail({ code, email }: { code: string; email: string }) {
   try {
+    const parse = LoginByCodeSchema.safeParse({ code, email })
+    if (!parse.success) return data(false, parse.error.errors[0].message)
     const user = await db.user.findUnique({
       where: {
         email
@@ -113,7 +118,7 @@ export async function verifyVerifyEmail({ code, email }: { code: string; email: 
       data: { status: 'active' },
       where: { email }
     })
-    return data(true, '邮箱验证成功')
+    return await signToken(user)
   } catch {
     return data(false, '邮箱验证失败')
   }

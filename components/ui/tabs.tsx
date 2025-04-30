@@ -17,13 +17,9 @@ const Tabs = memo(function Tab({
   selected: string
 }) {
   return (
-    <div className={cx('flex gap-2', className)}>
+    <div className={cx('flex gap-1.5', className)}>
       {items.map(({ key, value }) => (
-        <Button
-          className={cx('cursor-pointer bg-transparent p-0.5! transition-[background-color]!', selected === key ? 'text-theme' : 'text-current')}
-          key={key}
-          onTap={() => onChange(key)}
-        >
+        <Button className={selected === key ? 'text-theme' : ''} key={key} onTap={() => onChange(key)} type="text">
           {value}
         </Button>
       ))}

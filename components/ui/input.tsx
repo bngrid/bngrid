@@ -48,8 +48,8 @@ const Input = memo(function Input({
       <input
         autoComplete="off"
         className={cx(
-          'peer pointer-events-auto! min-w-0 flex-1 outline-none placeholder:tracking-normal placeholder:text-current disabled:cursor-not-allowed',
-          type === 'code' && 'tracking-[2rem]'
+          'peer pointer-events-auto! min-w-0 flex-1 outline-none placeholder:tracking-normal placeholder:text-inherit disabled:cursor-not-allowed',
+          type === 'code' && 'tracking-[0.6rem]'
         )}
         disabled={disabled || loading}
         id={id}
@@ -80,7 +80,7 @@ const Input = memo(function Input({
         />
       )}
       {suffix}
-      <div className="absolute top-[calc(100%+0.2rem)] left-0 text-[0.8rem] break-all text-transparent peer-focus:text-current">
+      <div className="absolute top-[calc(100%+0.2rem)] left-0 text-[0.8rem] break-all opacity-0 transition-[opacity] duration-300 peer-focus:opacity-100">
         {parse?.error?.errors[0]?.message}
       </div>
     </label>

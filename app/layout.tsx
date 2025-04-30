@@ -55,7 +55,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
           <Setup />
           {children}
         </Providers>
-        <div className="absolute inset-0 bg-transparent transition-[background-color] duration-300 dark:bg-black/30" />
+        <div className="absolute inset-0 bg-black/30 opacity-0 transition-[opacity] duration-300 dark:opacity-100" />
       </body>
     </html>
   )
