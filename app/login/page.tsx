@@ -6,30 +6,21 @@ import Button from '@/components/ui/button'
 import Image from '@/components/ui/image'
 import Input from '@/components/ui/input'
 import Tabs from '@/components/ui/tabs'
-import useValue from '@/hooks/value'
+import { useToastStore } from '@/providers/toast-store'
 import { CodeSchema, EmailSchema, PasswordSchema, UsernameSchema } from '@/schemas/user'
+import cx from '@/utils/cx'
 import { Lock, LogIn, Mail, RectangleEllipsis, User } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 const LoginPage = () => {
+  const { addToast } = useToastStore(state => state)
   const router = useRouter()
   const { 0: selected, 1: setSelected } = useState('username')
   const { 0: send, 1: setSend } = useState({
     loading: false,
     timer: 0
   })
-  const { anime, value: style } = useValue({
-    left: 0
-  })
-  useEffect(() => {
-    anime({
-      easing: 'easeInOut',
-      target: () => ({
-        left: selected === 'username' ? 0 : -24
-      })
-    })
-  }, [selected])
   const items = [
     { key: 'username', value: '密码登录' },
     { key: 'email', value: '验证码登录' }
@@ -55,9 +46,15 @@ const LoginPage = () => {
       loading: false
     }))
     if (!data.success) {
-      return alert(data.result)
+      return addToast({
+        type: 'error',
+        message: data.result
+      })
     }
-    alert('登录成功')
+    addToast({
+      type: 'success',
+      message: '登录成功'
+    })
     router.replace('/')
   }
   async function login2() {
@@ -71,9 +68,15 @@ const LoginPage = () => {
       loading: false
     }))
     if (!data.success) {
-      return alert(data.result)
+      return addToast({
+        type: 'error',
+        message: data.result
+      })
     }
-    alert('登录成功')
+    addToast({
+      type: 'success',
+      message: '登录成功'
+    })
     router.replace('/')
   }
   async function sendEmail() {
@@ -87,9 +90,15 @@ const LoginPage = () => {
       loading: false
     }))
     if (!data.success) {
-      return alert(data.result)
+      return addToast({
+        type: 'error',
+        message: data.result
+      })
     }
-    alert('验证码发送成功')
+    addToast({
+      type: 'success',
+      message: '验证码发送成功'
+    })
     setSend(send => ({
       ...send,
       timer: 60
@@ -121,7 +130,12 @@ const LoginPage = () => {
             前往注册
           </Button>
         </div>
-        <div className="flex w-92 justify-between" style={{ transform: `translate3d(${style.left}rem, 0, 0)` }}>
+        <div
+          className={cx(
+            'flex w-92 justify-between transition-[translate] duration-300',
+            selected === 'username' ? 'translate-x-0' : '-translate-x-48'
+          )}
+        >
           <div className="flex flex-col gap-3">
             <Input
               field="用户名"

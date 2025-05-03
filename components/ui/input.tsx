@@ -36,7 +36,7 @@ const Input = memo(function Input({
   return (
     <label
       className={cx(
-        'text-foreground focus-within:inset-ring-theme pointer-events-auto! relative inline-flex w-44 items-center justify-center gap-1 rounded-[0.675rem] bg-transparent py-1.5 pr-1.5 inset-ring-[0.1rem] transition-[color,box-shadow] duration-300',
+        'focus-within:inset-ring-theme pointer-events-auto! relative inline-flex w-44 items-center gap-1 rounded-[0.675rem] py-1.5 pr-1.5 inset-ring-[0.1rem] transition-[color,box-shadow] duration-300',
         prefix || loading ? 'pl-1.5' : 'pl-2',
         disabled || loading ? 'cursor-not-allowed opacity-60' : 'cursor-text',
         value && verify && (parse?.success ? 'focus-within:inset-ring-success!' : 'focus-within:inset-ring-error!'),

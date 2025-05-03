@@ -5,7 +5,7 @@ const { JWT_PUBLIC_KEY: pubPem } = process.env
 if (!pubPem) throw new Error('未找到 JWT_PUBLIC_KEY 环境变量')
 const pubKey = importSPKI(pubPem, 'RS256')
 
-const paths = ['/login', '/register', '/verify', '/redirect']
+const paths = ['/login', '/register', '/verify']
 
 export async function middleware(request: NextRequest) {
   try {

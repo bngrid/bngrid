@@ -5,12 +5,14 @@ import ThemeButton from '@/components/theme-button'
 import Button from '@/components/ui/button'
 import Image from '@/components/ui/image'
 import Input from '@/components/ui/input'
+import { useToastStore } from '@/providers/toast-store'
 import { EmailSchema, PasswordSchema, UsernameSchema } from '@/schemas/user'
 import { Lock, Mail, SquarePen, User } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 const RegisterPage = () => {
+  const { addToast } = useToastStore(state => state)
   const router = useRouter()
   const { 0: form, 1: setForm } = useState({
     email: '',
@@ -29,9 +31,15 @@ const RegisterPage = () => {
       loading: false
     }))
     if (!data.success) {
-      return alert(data.result)
+      return addToast({
+        type: 'error',
+        message: data.result
+      })
     }
-    alert(data.result)
+    addToast({
+      type: 'success',
+      message: data.result
+    })
     router.replace('/verify')
   }
   return (

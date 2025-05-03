@@ -2,11 +2,14 @@
 
 import { ParamStoreProvider } from './param-store'
 import { ThemeStoreProvider } from './theme-store'
+import { ToastStoreProvider } from './toast-store'
 
 const Providers = ({ children }: { children: React.ReactNode }) => {
   return (
     <ParamStoreProvider>
-      <ThemeStoreProvider>{children}</ThemeStoreProvider>
+      <ThemeStoreProvider>
+        <ToastStoreProvider>{children}</ToastStoreProvider>
+      </ThemeStoreProvider>
     </ParamStoreProvider>
   )
 }

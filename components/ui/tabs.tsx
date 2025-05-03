@@ -17,7 +17,7 @@ const Tabs = memo(function Tab({
   selected: string
 }) {
   return (
-    <div className={cx('flex gap-1.5', className)}>
+    <div className={cx('flex gap-2', className)}>
       {items.map(({ key, value }) => (
         <Button className={selected === key ? 'text-theme' : ''} key={key} onTap={() => onChange(key)} type="text">
           {value}

@@ -30,6 +30,7 @@
   --animate-loader-a: loader-a 3s linear infinite;
   --animate-loader-b: loader-b 3s linear infinite;
   --animate-loader-c: loader-c 3s linear infinite;
+  --animate-progress-bar: progress-bar 3s linear;
   @keyframes loader-a {
     0%,
     6.25% {
@@ -102,6 +103,14 @@
       transform: translate3d(0, 0, 0);
       width: 1.2rem;
       height: 2.7rem;
+    }
+  }
+  @keyframes progress-bar {
+    from {
+      width: 100%;
+    }
+    to {
+      width: 0%;
     }
   }
 }

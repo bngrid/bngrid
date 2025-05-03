@@ -5,12 +5,14 @@ import ThemeButton from '@/components/theme-button'
 import Button from '@/components/ui/button'
 import Image from '@/components/ui/image'
 import Input from '@/components/ui/input'
+import { useToastStore } from '@/providers/toast-store'
 import { CodeSchema, EmailSchema } from '@/schemas/user'
 import { Mail, RectangleEllipsis, ShieldCheck } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 const VerifyPage = () => {
+  const { addToast } = useToastStore(state => state)
   const router = useRouter()
   const { 0: send, 1: setSend } = useState({
     loading: false,
@@ -32,9 +34,15 @@ const VerifyPage = () => {
       loading: false
     }))
     if (!data.success) {
-      return alert(data.result)
+      return addToast({
+        type: 'error',
+        message: data.result
+      })
     }
-    alert(data.result)
+    addToast({
+      type: 'success',
+      message: '验证成功'
+    })
     router.replace('/')
   }
   async function sendEmail() {
@@ -48,9 +56,15 @@ const VerifyPage = () => {
       loading: false
     }))
     if (!data.success) {
-      return alert(data.result)
+      return addToast({
+        type: 'error',
+        message: data.result
+      })
     }
-    alert('验证码发送成功')
+    addToast({
+      type: 'success',
+      message: '验证码发送成功'
+    })
     setSend(send => ({
       ...send,
       timer: 60

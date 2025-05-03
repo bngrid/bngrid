@@ -3,6 +3,7 @@ import '@/assets/globals.css'
 import type { Metadata, Viewport } from 'next'
 
 import Setup from '@/components/layouts/setup'
+import Toast from '@/components/ui/toast'
 import Providers from '@/providers'
 import cx from '@/utils/cx'
 import localFont from 'next/font/local'
@@ -47,13 +48,14 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
     <html className="dark h-full" lang="zh-CN">
       <body
         className={cx(
-          'font-family bg-background text-foreground relative h-full touch-none leading-[1.2em] antialiased transition-[color,background-color] duration-300 select-none',
+          'font-family bg-background text-foreground relative h-full touch-none overflow-hidden leading-[1.2em] antialiased transition-[color,background-color] duration-300 select-none',
           font.variable
         )}
       >
         <Providers>
           <Setup />
           {children}
+          <Toast />
         </Providers>
         <div className="absolute inset-0 bg-black/30 opacity-0 transition-[opacity] duration-300 dark:opacity-100" />
       </body>
