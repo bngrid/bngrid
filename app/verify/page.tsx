@@ -35,13 +35,13 @@ const VerifyPage = () => {
     }))
     if (!data.success) {
       return addToast({
-        type: 'error',
-        message: data.result
+        message: data.result,
+        type: 'error'
       })
     }
     addToast({
-      type: 'success',
-      message: '验证成功'
+      message: '验证成功',
+      type: 'success'
     })
     router.replace('/')
   }
@@ -57,13 +57,13 @@ const VerifyPage = () => {
     }))
     if (!data.success) {
       return addToast({
-        type: 'error',
-        message: data.result
+        message: data.result,
+        type: 'error'
       })
     }
     addToast({
-      type: 'success',
-      message: '验证码发送成功'
+      message: '验证码发送成功',
+      type: 'success'
     })
     setSend(send => ({
       ...send,

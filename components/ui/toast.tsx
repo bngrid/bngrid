@@ -4,36 +4,37 @@ import { useToastStore } from '@/providers/toast-store'
 import cx from '@/utils/cx'
 import { CircleAlert, CircleCheck, CircleX, Info, X } from 'lucide-react'
 import { memo } from 'react'
+
 import Button from './button'
 
 const types = {
+  error: {
+    icon: <CircleX />,
+    style: 'text-error bg-error/10'
+  },
   info: {
-    style: 'text-info bg-info/10',
-    icon: <Info />
+    icon: <Info />,
+    style: 'text-info bg-info/10'
   },
   success: {
-    style: 'text-success bg-success/10',
-    icon: <CircleCheck />
+    icon: <CircleCheck />,
+    style: 'text-success bg-success/10'
   },
   warning: {
-    style: 'text-warning bg-warning/10',
-    icon: <CircleAlert />
-  },
-  error: {
-    style: 'text-error bg-error/10',
-    icon: <CircleX />
+    icon: <CircleAlert />,
+    style: 'text-warning bg-warning/10'
   }
 }
 
 const Toast = memo(
   function Toast() {
-    const { toasts, removeToast } = useToastStore(state => state)
+    const { removeToast, toasts } = useToastStore(state => state)
     return (
       <div className="absolute inset-x-0 top-4 mx-auto w-44">
         {toasts.map(item => (
           <div
-            key={item.timer}
             className={cx('grid transition-[grid-template-rows] duration-300', item.animate === 'in' ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]')}
+            key={item.timer}
           >
             <div
               className={cx(

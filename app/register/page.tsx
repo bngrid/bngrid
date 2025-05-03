@@ -32,13 +32,13 @@ const RegisterPage = () => {
     }))
     if (!data.success) {
       return addToast({
-        type: 'error',
-        message: data.result
+        message: data.result,
+        type: 'error'
       })
     }
     addToast({
-      type: 'success',
-      message: data.result
+      message: data.result,
+      type: 'success'
     })
     router.replace('/verify')
   }

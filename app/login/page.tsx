@@ -47,13 +47,13 @@ const LoginPage = () => {
     }))
     if (!data.success) {
       return addToast({
-        type: 'error',
-        message: data.result
+        message: data.result,
+        type: 'error'
       })
     }
     addToast({
-      type: 'success',
-      message: '登录成功'
+      message: '登录成功',
+      type: 'success'
     })
     router.replace('/')
   }
@@ -69,13 +69,13 @@ const LoginPage = () => {
     }))
     if (!data.success) {
       return addToast({
-        type: 'error',
-        message: data.result
+        message: data.result,
+        type: 'error'
       })
     }
     addToast({
-      type: 'success',
-      message: '登录成功'
+      message: '登录成功',
+      type: 'success'
     })
     router.replace('/')
   }
@@ -91,13 +91,13 @@ const LoginPage = () => {
     }))
     if (!data.success) {
       return addToast({
-        type: 'error',
-        message: data.result
+        message: data.result,
+        type: 'error'
       })
     }
     addToast({
-      type: 'success',
-      message: '验证码发送成功'
+      message: '验证码发送成功',
+      type: 'success'
     })
     setSend(send => ({
       ...send,
