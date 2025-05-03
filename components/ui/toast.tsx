@@ -44,7 +44,7 @@ const Toast = memo(
               )}
             >
               {types[item.type].icon}
-              <div className="text-foreground flex-1">{item.message}</div>
+              <div className="text-foreground flex-1 transition-[color] duration-300">{item.message}</div>
               <Button
                 className="text-foreground rounded-full! bg-transparent p-0!"
                 icon={<X />}

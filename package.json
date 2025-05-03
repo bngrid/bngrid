@@ -14,7 +14,8 @@
     "lint": "next lint",
     "build": "next build",
     "start": "next start -p 8080",
-    "prod": "git pull && pnpm lf && next lint && pnpm build"
+    "push": "pnpm lf && pnpm lint --fix . && git push",
+    "pull": "git pull && pnpm build"
   },
   "dependencies": {
     "@prisma/client": "^6.7.0",

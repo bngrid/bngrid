@@ -119,11 +119,11 @@ const LoginPage = () => {
   return (
     <div className="relative flex h-full flex-col items-center justify-center gap-8">
       <ThemeButton className="absolute! top-4 right-4" />
-      <div className="flex items-center gap-1.5">
+      <div className="animate-in fade-in flex items-center gap-1.5 transition-[opacity] duration-600">
         <Image alt="logo" size={1.2} src="/icon.svg" />
         <div className="text-theme text-4xl">BNGRID</div>
       </div>
-      <div className="flex w-44 flex-col gap-3 overflow-hidden">
+      <div className="animate-in fade-in slide-in-from-bottom-[3rem] flex w-44 flex-col gap-3 overflow-hidden transition-[opacity,transform] duration-600">
         <div className="flex justify-between">
           <Tabs items={items} onChange={setSelected} selected={selected} />
           <Button href="/register" target="replace" type="text">

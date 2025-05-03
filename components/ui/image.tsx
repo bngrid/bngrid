@@ -6,7 +6,7 @@ import { memo } from 'react'
 
 const Image = memo(function Image({ alt = '', size, src }: { alt: string; size: number; src: string }) {
   const { size: unit } = useParamStore(state => state)
-  return <NextImage alt={alt} height={size * unit} priority src={src} width={size * unit} />
+  return <NextImage alt={alt} height={size * unit || 30 * size} priority src={src} width={size * unit || 30 * size} />
 })
 
 export default Image
